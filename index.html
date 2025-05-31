@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Responsive Sidebar</title>
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #7367f0;
+            --primary-light: #8f85f3;
+            --secondary-color: #82868b;
+            --success-color: #28c76f;
+            --danger-color: #ea5455;
+            --warning-color: #ff9f43;
+            --dark-color: #4b4b4b;
+            --light-color: #f8f8f8;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 80px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f9;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: var(--sidebar-width);
+            background: #fff;
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar.collapsed .logo-details .logo_name {
+            display: none;
+        }
+
+        .sidebar.collapsed ~ .home-section {
+            left: var(--sidebar-collapsed-width);
+            width: calc(100% - var(--sidebar-collapsed-width));
+        }
+
+        .sidebar .logo-details {
+            height: 60px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .sidebar .logo-details i {
+            font-size: 28px;
+            color: var(--primary-color);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .sidebar .logo-details .logo_name {
+            font-size: 20px;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-left: 10px;
+            transition: var(--transition);
+        }
+
+        .sidebar .nav-links {
+            height: calc(100% - 120px); /* Adjusted for profile details height */
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar .nav-links::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar .nav-links::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .sidebar .nav-links li {
+            position: relative;
+            list-style: none;
+            margin: 8px 0;
+        }
+
+        .sidebar .nav-links li:hover:not(.active) { /* Hover only if not active */
+            background: rgba(115, 103, 240, 0.05);
+        }
+        
+        .sidebar .nav-links li.active { 
+             background: rgba(115, 103, 240, 0.1);
+        }
+        .sidebar .nav-links li.active > a, 
+        .sidebar .nav-links li.active > a i {
+            color: var(--primary-color);
+        }
+
+        .sidebar .nav-links li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 10px 20px;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .sidebar .nav-links li a i {
+            font-size: 20px;
+            color: var(--secondary-color);
+            min-width: 40px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .sidebar .nav-links li a .link_name {
+            font-size: 15px;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+            margin-left: 10px; 
+        }
+
+        .sidebar.collapsed .nav-links li a .link_name {
+            display: none;
+        }
+        
+        .sidebar .nav-links li .sub-menu {
+            padding: 6px 6px 6px 40px; /* Adjusted left padding */
+            background: rgba(115, 103, 240, 0.05);
+            display: none;
+        }
+        
+        .sidebar:not(.collapsed) .nav-links li .sub-menu a {
+            padding: 8px 15px 8px 20px; 
+            font-size: 14px;
+            color: var(--dark-color);
+        }
+
+        .sidebar .nav-links li.showMenu .sub-menu {
+            display: block;
+        }
+
+        .sidebar .nav-links li .sub-menu a:hover,
+        .sidebar .nav-links li .sub-menu a.active {
+            color: var(--primary-color);
+        }
+         .sidebar .nav-links li .sub-menu a.active {
+            font-weight: 500; /* Or some other distinct style */
+        }
+
+
+        /* Styles for sub-menu when sidebar is collapsed (fly-out) */
+        .sidebar.collapsed .nav-links li .sub-menu {
+            position: absolute;
+            left: 100%; 
+            top: -10px; /* Adjust slightly for better alignment */
+            width: 200px;
+            background: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0 6px 6px 0;
+            padding: 10px 0; 
+            display: none; 
+            z-index: 1000; 
+        }
+        
+        .sidebar.collapsed .nav-links li .sub-menu a {
+            padding: 10px 20px; 
+            font-size: 14px;
+            color: var(--dark-color);
+            white-space: nowrap;
+            display: block; /* Make sure full width is clickable */
+        }
+        .sidebar.collapsed .nav-links li .sub-menu a .link_name {
+            display: inline-block !important; /* Show link name in flyout */
+            opacity: 1 !important;
+        }
+
+
+        .sidebar.collapsed .nav-links li:hover .sub-menu {
+            display: block; 
+        }
+        
+        .sidebar .nav-links li .arrow {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .nav-links li .arrow {
+            display: none;
+        }
+
+        .sidebar .nav-links li.showMenu .arrow {
+            transform: translateY(-50%) rotate(180deg);
+            color: var(--primary-color); /* Make arrow active color */
+        }
+
+        .sidebar .profile-details {
+            position: absolute; /* Changed from fixed to absolute for better scroll behavior with nav-links */
+            bottom: 0;
+            left: 0;
+            width: 100%; /* Ensure it takes full width of sidebar */
+            padding: 15px 20px;
+            background: rgba(115, 103, 240, 0.05); /* Lighter background */
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .profile-details {
+            /* width: var(--sidebar-collapsed-width); */ /* Already handled by parent */
+            justify-content: center;
+        }
+
+        .sidebar .profile-details .profile-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar .profile-details .profile-content .avatar { 
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px; 
+        }
+
+        .sidebar .profile-details .profile-content .profile-name {
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        .sidebar .profile-details .profile-content .profile-name .name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .sidebar .profile-details .profile-content .profile-name .role {
+            font-size: 12px;
+            color: var(--secondary-color);
+        }
+
+        .sidebar.collapsed .profile-details .profile-content .profile-name {
+            display: none;
+        }
+
+        .sidebar .profile-details .logout {
+            color: var(--secondary-color);
+            font-size: 22px; /* Slightly larger logout icon */
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px; /* Easier to click */
+        }
+
+        .sidebar .profile-details .logout:hover {
+            color: var(--danger-color);
+        }
+
+        .sidebar.collapsed .profile-details .logout {
+             display: none; /* Hide logout text/icon when collapsed, or adjust if icon only is desired */
+        }
+
+        /* Home Section Styles */
+        .home-section {
+            position: relative;
+            left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+            background: #f5f5f9;
+            transition: var(--transition);
+            /* padding: 20px; Not here, but in child elements if needed */
+        }
+
+        .home-section .home-content { /* This is the top bar */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 60px;
+            background: #fff;
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+            /* border-radius: 8px; No radius for full width bar */
+            position: sticky; /* Make top bar sticky */
+            top: 0;
+            z-index: 90; /* Below sidebar */
+        }
+
+        .home-section .home-content .bx-menu {
+            font-size: 24px;
+            color: var(--dark-color);
+            cursor: pointer;
+        }
+
+        .home-section .home-content .bx-menu:hover {
+            color: var(--primary-color);
+        }
+        
+        #mainContentArea {
+            padding: 20px; /* Padding for the actual content area below top bar */
+        }
+
+        .home-section .home-content .search-box {
+            display: flex;
+            align-items: center;
+            background: #f5f5f9;
+            border-radius: 6px;
+            padding: 5px 15px;
+        }
+
+        .home-section .home-content .search-box i {
+            font-size: 18px;
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        .home-section .home-content .search-box input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .home-section .home-content .profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .home-section .home-content .profile .notification {
+            position: relative;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .home-section .home-content .profile .notification i {
+            font-size: 22px;
+            color: var(--dark-color);
+        }
+
+        .home-section .home-content .profile .notification .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-section .home-content .profile .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px; 
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-width: 90%;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--dark-color);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(115, 103, 240, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+
+        .text-muted {
+            color: var(--secondary-color);
+            font-size: 13px;
+        }
+
+        .text-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+
+        .switch-form {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        /* Dashboard Content Styles */
+        .dashboard-content {
+            /* margin-top: 30px; /* Removed as mainContentArea has padding */
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .card-header i {
+            font-size: 20px;
+            color: var(--secondary-color);
+        }
+
+        .card-body p {
+            color: var(--secondary-color);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px 0 rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .welcome-message p {
+            color: var(--secondary-color);
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Compose Email Modal ('send') Styles */
+        .send {
+            position: fixed;
+            bottom: 20px; /* Position at bottom right */
+            right: 20px;
+            width: 90%;
+            max-width: 550px; /* Max width for compose */
+            height: auto; /* Auto height based on content */
+            max-height: 80vh; /* Max height to prevent full screen */
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1050; /* Above modals if any overlap */
+            display: none; 
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUpFromBottom 0.4s ease-out;
+        }
+
+        @keyframes slideUpFromBottom {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .compose-header {
+            padding: 15px 20px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move; /* Indicate draggable header */
+        }
+
+        .compose-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .compose-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-send, .btn-discard {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-send {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-send:hover {
+            background: #f0f0f0;
+        }
+        .btn-send:disabled {
+            background: #e0e0e0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+
+        .btn-discard {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-discard:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .compose-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+        }
+        .compose-body .form-group { margin-bottom: 10px; } /* Less margin in compose */
+        .compose-body .form-group:last-of-type { margin-bottom: 15px; }
+
+
+        .compose-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            /* margin-bottom: 15px; /* Handled by form-group */
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .compose-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(115, 103, 240, 0.2);
+        }
+
+        .compose-textarea {
+            width: 100%;
+            flex: 1; 
+            min-height: 150px; 
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            resize: vertical; 
+            font-size: 14px;
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .compose-textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(115, 103, 240, 0.2);
+        }
+
+        .compose-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            margin-top: 15px; 
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .attachment-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-attachment, .btn-format {
+            padding: 8px 15px;
+            background: #f5f5f9;
+            border: none;
+            border-radius: 6px;
+            color: var(--dark-color);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-attachment:hover, .btn-format:hover {
+            background: #e0e0e0;
+        }
+
+        .word-count {
+            font-size: 12px;
+            color: var(--secondary-color);
+        }
+        #composeStatusDisplay {
+            padding: 10px;
+            margin-top: 0; /* Will be before first form group */
+            margin-bottom: 15px;
+            text-align: left;
+            color: var(--dark-color);
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            font-size: 13px;
+            line-height: 1.5;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        #composeStatusDisplay p { margin: 5px 0; }
+
+
+        /* Inbox View Styles */
+        .inbox-container {
+            /* padding: 20px; /* Removed, mainContentArea handles padding */
+            /* margin-top: 0; */
+        }
+
+        .inbox-container h2.inbox-header-title { /* More specific selector */
+            font-size: 24px;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .inbox-container h2.inbox-header-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+
+        .email-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .email-item {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .email-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .email-item.unread {
+            border-left: 3px solid var(--primary-color); /* Unread indicator */
+        }
+
+        .email-item.unread .email-sender,
+        .email-item.unread .email-subject {
+            font-weight: 600; 
+            color: var(--dark-color);
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .email-sender {
+            font-size: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+        .email-sender i {
+            margin-right: 8px;
+            color: var(--secondary-color);
+            font-size: 18px; /* Slightly larger icon */
+        }
+        .email-item.unread .email-sender i {
+            color: var(--primary-color);
+        }
+
+        .email-timestamp {
+            font-size: 12px;
+            color: var(--secondary-color);
+            white-space: nowrap;
+        }
+
+        .email-subject {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .email-snippet {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            /* Sidebar forced collapsed look by default on smaller screens */
+            .sidebar:not(.manually-expanded) { /* Add a class if user explicitly expands on small screen */
+                width: var(--sidebar-collapsed-width);
+            }
+            .sidebar:not(.manually-expanded) .logo-details .logo_name {
+                display: none;
+            }
+            .sidebar:not(.manually-expanded) .profile-details .profile-content .profile-name,
+            .sidebar:not(.manually-expanded) .profile-details .logout {
+                display: none;
+            }
+             .sidebar:not(.manually-expanded) .profile-details {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            .sidebar:not(.manually-expanded) ~ .home-section {
+                left: var(--sidebar-collapsed-width);
+                width: calc(100% - var(--sidebar-collapsed-width));
+            }
+            .sidebar:not(.manually-expanded) .nav-links li a .link_name {
+                 display: none;
+            }
+            .sidebar:not(.manually-expanded) .nav-links li .arrow {
+                 display: none;
+            }
+            /* Flyout submenus will still work due to .sidebar.collapsed li:hover .sub-menu */
+
+            .send { /* Compose modal on smaller screens */
+                width: 95%;
+                right: 2.5%;
+                bottom: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-content {
+                margin: 20% auto;
+                width: 90%;
+            }
+
+            .home-section .home-content .search-box {
+                display: none;
+            }
+             .compose-header h2 { font-size: 16px; }
+             .compose-actions { gap: 5px; }
+             .btn-send, .btn-discard { padding: 6px 10px; font-size: 13px;}
+             .compose-body { padding: 15px; }
+             .attachment-options { flex-direction: column; align-items: flex-start; gap: 8px; }
+             .send {
+                max-height: 85vh;
+             }
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar Navigation -->
+<div class="sidebar">
+    <div class="logo-details">
+        <i class='bx bxl-codepen'></i>
+        <span class="logo_name">MyApp</span>
+    </div>
+    <ul class="nav-links">
+        <li id="dashboardNavItem">
+            <a href="#" id="dashboardLink">
+                <i class='bx bx-grid-alt'></i>
+                <span class="link_name">Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-user'></i>
+                <span class="link_name">Users</span>
+                <i class='bx bx-chevron-down arrow'></i>
+            </a>
+            <ul class="sub-menu">
+                <li><a href="#"><span class="link_name">All Users</span></a></li>
+                <li><a href="#"><span class="link_name">Add User</span></a></li>
+                <li><a href="#"><span class="link_name">Roles</span></a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-package'></i>
+                <span class="link_name">Products</span>
+                <i class='bx bx-chevron-down arrow'></i>
+            </a>
+            <ul class="sub-menu">
+                <li><a href="#"><span class="link_name">Inventory</span></a></li>
+                <li><a href="#"><span class="link_name">Categories</span></a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-cart'></i>
+                <span class="link_name">Orders</span>
+            </a>
+        </li>
+        <li id="inboxSentNavItem">
+            <a href="#" id="inboxSentToggle"> <!-- This main link can also toggle if href="#" -->
+                <i class='bx bx-envelope'></i>
+                <span class="link_name">Mail</span>
+                <i class='bx bx-chevron-down arrow'></i>
+            </a>
+            <ul class="sub-menu">
+                <li><a href="#" id="inboxLink"><span class="link_name">Inbox</span></a></li>
+                <li><a href="#" id="sentLink"><span class="link_name">Compose</span></a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-cog'></i>
+                <span class="link_name">Settings</span>
+            </a>
+        </li>
+    </ul>
+    <div class="profile-details">
+        <div class="profile-content">
+            <div class="avatar" id="avatarInitials">JD</div>
+            <div class="profile-name">
+                <div class="name" id="profileName">John Doe</div>
+                <div class="role" id="profileRole">Admin</div>
+            </div>
+        </div>
+        <i class='bx bx-log-out logout' id="logoutBtn" title="Logout"></i>
+    </div>
+</div>
+
+<!-- Home Section -->
+<section class="home-section">
+    <div class="home-content"> <!-- This is the top bar -->
+        <i class='bx bx-menu' id="sidebarToggle"></i>
+        <div class="search-box">
+            <i class='bx bx-search'></i>
+            <input type="text" placeholder="Search...">
+        </div>
+        <div class="profile">
+            <div class="notification">
+                <i class='bx bx-bell'></i>
+                <span class="badge">3</span>
+            </div>
+            <div class="avatar" id="topAvatarInitials">JD</div>
+        </div>
+    </div>
+
+    <!-- This is where dashboard content OR inbox content will go -->
+    <div id="mainContentArea">
+        <!-- Dashboard Content (will be hidden/shown by default) -->
+        <div class="dashboard-content" id="dashboardView" style="display: none;">
+            <div class="welcome-message">
+                <h1>Welcome to Your Dashboard</h1>
+                <p>This is a modern responsive sidebar template. Explore the features and customize it to fit your needs.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Quick Stats</h3>
+                    <i class='bx bx-stats'></i>
+                </div>
+                <div class="card-body">
+                    <p>Display key metrics and important information here. The layout is responsive and adapts to different screen sizes.</p>
+                </div>
+            </div>
+             <div class="card">
+                <div class="card-header">
+                    <h3>Recent Activity</h3>
+                    <i class='bx bx-list-ul'></i>
+                </div>
+                <div class="card-body">
+                    <p>Show a feed of recent activities or updates relevant to the user.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inbox Content (will be dynamically created and shown here) -->
+        <!-- Container for inbox will be added by JS if needed -->
+    </div>
+</section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal-id="loginModal">×</span>
+            <div class="modal-header">
+                <h2>Login</h2>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-block">Login</button>
+                <div class="switch-form mt-3 text-center">
+                    <span class="text-muted">Don't have an account? </span>
+                    <span class="text-link" id="showRegister">Register</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal-id="registerModal">×</span>
+            <div class="modal-header">
+                <h2>Register</h2>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerRole">Role</label>
+                    <select id="registerRole">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-block">Register</button>
+                <div class="switch-form mt-3 text-center">
+                    <span class="text-muted">Already have an account? </span>
+                    <span class="text-link" id="showLogin">Login</span>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Compose Email Modal -->
+    <div id="composeModal" class="send"> <!-- Changed ID to composeModal for clarity -->
+        <div class="compose-header" id="composeHeaderDraggable">
+            <h2>Compose Email</h2>
+            <div class="compose-actions">
+                <button class="btn-send" id="btnSendEmail">Send</button>
+                <button class="btn-discard" id="btnDiscardEmail">Discard</button>
+            </div>
+        </div>
+        <div class="compose-body">
+             <!-- Placeholder for status messages -->
+            <div class="form-group">
+                <input type="text" placeholder="To" class="compose-input" id="composeTo">
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Cc" class="compose-input" id="composeCc">
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Subject" class="compose-input" id="composeSubject">
+            </div>
+            <textarea class="compose-textarea" placeholder="Write your message here..." id="composeMessage"></textarea>
+            <div class="compose-footer">
+                <div class="attachment-options">
+                    <button class="btn-attachment"><i class='bx bx-paperclip'></i> Attach</button>
+                    <button class="btn-format"><i class='bx bx-font'></i> Format</button>
+                </div>
+                <div class="word-count" id="wordCount">0 words</div>
+            </div>
+        </div>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const allNavLinks = document.querySelectorAll('.sidebar .nav-links li');
+
+    const mainContentArea = document.getElementById('mainContentArea');
+    const dashboardView = document.getElementById('dashboardView');
+    
+    const dashboardLink = document.getElementById('dashboardLink');
+    const dashboardNavItem = document.getElementById('dashboardNavItem');
+    const inboxLink = document.getElementById('inboxLink');
+    const inboxSentNavItem = document.getElementById('inboxSentNavItem');
+    const sentLink = document.getElementById('sentLink'); // For "Compose"
+
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const composeModal = document.getElementById('composeModal');
+
+    // --- User Authentication & UI Update ---
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    function updateUserUI(user) {
+        if (user && user.name) {
+            const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            const profileNameEl = document.getElementById('profileName');
+            const profileRoleEl = document.getElementById('profileRole');
+            const avatarInitialsEl = document.getElementById('avatarInitials');
+            const topAvatarInitialsEl = document.getElementById('topAvatarInitials');
+
+            if (profileNameEl) profileNameEl.textContent = user.name;
+            if (profileRoleEl) profileRoleEl.textContent = user.role;
+            if (avatarInitialsEl) avatarInitialsEl.textContent = initials;
+            if (topAvatarInitialsEl) topAvatarInitialsEl.textContent = initials;
+        }
+    }
+
+    function checkLoginStatus() {
+        currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            if (loginModal) loginModal.style.display = 'block';
+            if (dashboardView) dashboardView.style.display = 'none'; // Hide content if not logged in
+            const inboxViewContainer = document.getElementById('inboxViewContainer');
+            if (inboxViewContainer) inboxViewContainer.style.display = 'none';
+        } else {
+            updateUserUI(currentUser);
+            showDashboard(); // Show dashboard by default if logged in
+        }
+    }
+
+    // --- Sidebar Logic ---
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            // Optional: Add a class to indicate manual toggle on small screens
+            if (window.innerWidth <= 992) {
+                sidebar.classList.toggle('manually-expanded', !sidebar.classList.contains('collapsed'));
+            }
+        });
+    }
+
+    allNavLinks.forEach(liElement => {
+        const primaryAnchor = liElement.querySelector('a:not(.sub-menu a)'); // Get the main link, not submenu links
+        const subMenu = liElement.querySelector('.sub-menu');
+
+        if (primaryAnchor && subMenu) { // If this LI has a submenu
+            primaryAnchor.addEventListener('click', function(e) {
+                // Prevent default only if it's a pure toggle link (#) or has an arrow
+                if (primaryAnchor.getAttribute('href') === '#' || primaryAnchor.querySelector('.arrow')) {
+                    e.preventDefault();
+                }
+
+                // If a submenu item itself is clicked, its specific handler (e.g., inboxLink) will manage views.
+                // Don't toggle the parent menu if a direct sub-item link (not just text span) is clicked.
+                if (e.target.closest('.sub-menu a') && e.target.closest('.sub-menu a').getAttribute('href') !== '#') {
+                     // If an actual link in submenu clicked, let it proceed or be handled by its own listener
+                    return;
+                }
+                
+                if (!sidebar.classList.contains('collapsed')) {
+                    const isCurrentlyOpen = liElement.classList.contains('showMenu');
+                    // Close all other open submenus
+                    allNavLinks.forEach(otherLi => {
+                        if (otherLi !== liElement && otherLi.classList.contains('showMenu')) {
+                            otherLi.classList.remove('showMenu');
+                        }
+                    });
+                    // Toggle the current one if it wasn't already open OR if it's a different one being opened
+                    if (!isCurrentlyOpen || !allNavLinks.includes(liElement)) {
+                       if(!isCurrentlyOpen) liElement.classList.add('showMenu');
+                    } else {
+                         liElement.classList.remove('showMenu');
+                    }
+                }
+            });
+        }
+    });
+
+    // --- View Switching Logic ---
+    function clearAllActiveStatesAndViews() {
+        allNavLinks.forEach(li => {
+            li.classList.remove('active');
+            const subLinks = li.querySelectorAll('.sub-menu a');
+            subLinks.forEach(sl => sl.classList.remove('active'));
+        });
+        if (dashboardView) dashboardView.style.display = 'none';
+        const inboxViewContainer = document.getElementById('inboxViewContainer');
+        if (inboxViewContainer) inboxViewContainer.style.display = 'none';
+    }
+
+    function showDashboard() {
+        if (!currentUser) return; // Don't show if not logged in
+        clearAllActiveStatesAndViews();
+        if (dashboardView) dashboardView.style.display = 'block';
+        if (dashboardNavItem) dashboardNavItem.classList.add('active');
+
+        // Close any open submenus when dashboard is selected (unless sidebar is collapsed)
+        if (!sidebar.classList.contains('collapsed')) {
+            allNavLinks.forEach(li => {
+                if (li.classList.contains('showMenu')) {
+                    li.classList.remove('showMenu');
+                }
+            });
+        }
+    }
+
+    function showInbox() {
+        if (!currentUser) return; // Don't show if not logged in
+        clearAllActiveStatesAndViews();
+        
+        let inboxViewContainer = document.getElementById('inboxViewContainer');
+        if (!inboxViewContainer) {
+            inboxViewContainer = document.createElement('div');
+            inboxViewContainer.id = 'inboxViewContainer';
+            inboxViewContainer.className = 'inbox-container';
+            if (mainContentArea) mainContentArea.appendChild(inboxViewContainer);
+        }
+        inboxViewContainer.style.display = 'block';
+        inboxViewContainer.innerHTML = ''; // Clear previous content
+
+        const inboxHeader = document.createElement('h2');
+        inboxHeader.className = 'inbox-header-title'; // Added class for styling
+        inboxHeader.innerHTML = "<i class='bx bxs-inbox'></i> Inbox";
+        inboxViewContainer.appendChild(inboxHeader);
+
+        const emailList = document.createElement('ul');
+        emailList.className = 'email-list';
+        inboxViewContainer.appendChild(emailList);
+
+        const sampleInboxMessages = [
+            { id: 1, sender: 'Alice Wonderland', subject: 'Meeting Reminder', snippet: 'Just a friendly reminder about our meeting tomorrow at 10 AM regarding the new project proposal.', timestamp: '10:32 AM', unread: true, avatarIcon: 'bxs-user-circle' },
+            { id: 2, sender: 'Bob The Builder', subject: 'Project Update: Alpha Phase', snippet: 'Good news! The alpha phase of the project has been successfully completed. See attached report for details.', timestamp: 'Yesterday', unread: false, avatarIcon: 'bxs-hard-hat' },
+            { id: 3, sender: 'Tech Newsletter', subject: 'Weekly Tech Roundup - AI Advancements', snippet: 'This week in tech: new breakthroughs in AI, the latest gadget releases, and more. Click to read!', timestamp: 'Oct 28', unread: true, avatarIcon: 'bxs-news' },
+            { id: 4, sender: 'HR Department', subject: 'Important: Company Policy Update', snippet: 'Please review the updated company policy document attached. Acknowledgment required by EOD Friday.', timestamp: 'Oct 27', unread: false, avatarIcon: 'bxs-briefcase-alt-2' },
+        ];
+
+        if (sampleInboxMessages.length === 0) {
+            emailList.innerHTML = '<p>Your inbox is empty.</p>';
+        } else {
+            sampleInboxMessages.forEach(msg => {
+                const listItem = document.createElement('li');
+                listItem.className = 'email-item';
+                if (msg.unread) listItem.classList.add('unread');
+                
+                listItem.innerHTML = `
+                    <div class="email-header">
+                        <span class="email-sender"><i class='bx ${msg.avatarIcon || 'bxs-user'}'></i> ${msg.sender}</span>
+                        <span class="email-timestamp">${msg.timestamp}</span>
+                    </div>
+                    <div class="email-subject">${msg.subject}</div>
+                    <div class="email-snippet">${msg.snippet}</div>
+                `;
+                listItem.addEventListener('click', () => {
+                    alert(`Opening email from: ${msg.sender}\nSubject: ${msg.subject}\n\n(Full email view not implemented)`);
+                    if (msg.unread) {
+                        msg.unread = false;
+                        listItem.classList.remove('unread');
+                    }
+                });
+                emailList.appendChild(listItem);
+            });
+        }
+
+        if (inboxSentNavItem) {
+            inboxSentNavItem.classList.add('active');
+            if (!sidebar.classList.contains('collapsed') && !inboxSentNavItem.classList.contains('showMenu')) {
+                // Close other submenus first
+                allNavLinks.forEach(otherLi => {
+                    if (otherLi !== inboxSentNavItem && otherLi.classList.contains('showMenu')) {
+                        otherLi.classList.remove('showMenu');
+                    }
+                });
+                inboxSentNavItem.classList.add('showMenu');
+            }
+        }
+        if (inboxLink) inboxLink.classList.add('active');
+    }
+
+    if (dashboardLink) {
+        dashboardLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showDashboard();
+        });
+    }
+    if (inboxLink) {
+        inboxLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showInbox();
+        });
+    }
+
+    // --- Modal Logic ---
+    const showRegisterBtn = document.getElementById('showRegister');
+    const showLoginBtn = document.getElementById('showLogin');
+    const closeButtons = document.querySelectorAll('.modal .close');
+
+    if (showRegisterBtn && registerModal && loginModal) {
+        showRegisterBtn.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'block';
+        });
+    }
+    if (showLoginBtn && registerModal && loginModal) {
+        showLoginBtn.addEventListener('click', () => {
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'block';
+        });
+    }
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modalId = button.dataset.modalId;
+            if(modalId) document.getElementById(modalId).style.display = 'none';
+        });
+    });
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
+
+    // --- Auth Form Submissions ---
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password); // Note: Plain text password, not secure!
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                updateUserUI(user);
+                if (loginModal) loginModal.style.display = 'none';
+                alert(`Welcome back, ${user.name}!`);
+                showDashboard();
+            } else {
+                alert('Invalid email or password!');
+            }
+        });
+    }
+
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value; // Note: Plain text password!
+            const role = document.getElementById('registerRole').value;
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(u => u.email === email)) {
+                alert('User with this email already exists!');
+                return;
+            }
+            const newUser = { name, email, password, role };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            updateUserUI(newUser);
+            if (registerModal) registerModal.style.display = 'none';
+            alert('Registration successful! Welcome.');
+            showDashboard();
+        });
+    }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            currentUser = null; // Clear current user variable
+            // Clear UI fields related to user
+            const profileNameEl = document.getElementById('profileName');
+            const profileRoleEl = document.getElementById('profileRole');
+            const avatarInitialsEl = document.getElementById('avatarInitials');
+            const topAvatarInitialsEl = document.getElementById('topAvatarInitials');
+            if(profileNameEl) profileNameEl.textContent = "Guest";
+            if(profileRoleEl) profileRoleEl.textContent = "";
+            if(avatarInitialsEl) avatarInitialsEl.textContent = "G";
+            if(topAvatarInitialsEl) topAvatarInitialsEl.textContent = "G";
+
+            checkLoginStatus(); // This will show the login modal
+        });
+    }
+
+    // --- Responsive Handling ---
+    function handleResponsive() {
+        if (sidebar) {
+            if (window.innerWidth <= 992 && !sidebar.classList.contains('manually-expanded')) {
+                sidebar.classList.add('collapsed');
+            } else if (window.innerWidth > 992 && !sidebar.classList.contains('manually-expanded')) {
+                // Only auto-expand on larger screens if not manually collapsed by user preference (if that feature were added)
+                // For now, this just ensures it's expanded if window is large enough unless user collapsed it.
+                sidebar.classList.remove('collapsed');
+                 sidebar.classList.remove('manually-expanded'); // Clear manual state on resize to larger
+            }
+        }
+    }
+    window.addEventListener('resize', handleResponsive);
+    
+
+    // --- Compose Email Modal Logic ---
+    const btnDiscardEmail = document.getElementById('btnDiscardEmail');
+    const btnSendEmail = document.getElementById('btnSendEmail');
+    const composeTo = document.getElementById('composeTo');
+    const composeCc = document.getElementById('composeCc');
+    const composeSubject = document.getElementById('composeSubject');
+    const composeMessage = document.getElementById('composeMessage');
+    const wordCountEl = document.getElementById('wordCount');
+
+    if (sentLink && composeModal) { // "sentLink" is used as Compose button
+        sentLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!currentUser) { alert("Please log in to compose an email."); return; }
+            composeModal.style.display = 'flex';
+             // Activate parent LI and this link
+            clearAllActiveStatesAndViews(); // Clear other views
+            if (inboxSentNavItem) {
+                inboxSentNavItem.classList.add('active');
+                 if (!sidebar.classList.contains('collapsed') && !inboxSentNavItem.classList.contains('showMenu')) {
+                     allNavLinks.forEach(otherLi => {
+                        if (otherLi !== inboxSentNavItem && otherLi.classList.contains('showMenu')) {
+                            otherLi.classList.remove('showMenu');
+                        }
+                    });
+                    inboxSentNavItem.classList.add('showMenu');
+                 }
+            }
+            sentLink.classList.add('active');
+
+
+            const statusDisplay = document.getElementById('composeStatusDisplay');
+            if (statusDisplay) statusDisplay.remove(); // Remove old status display
+        });
+    }
+
+    if (btnDiscardEmail && composeModal) {
+        btnDiscardEmail.addEventListener('click', function() {
+            composeModal.style.display = 'none';
+            if(composeTo) composeTo.value = '';
+            if(composeCc) composeCc.value = '';
+            if(composeSubject) composeSubject.value = '';
+            if(composeMessage) composeMessage.value = '';
+            if(wordCountEl) wordCountEl.textContent = '0 words';
+            const statusDisplay = document.getElementById('composeStatusDisplay');
+            if (statusDisplay) statusDisplay.remove();
+            btnSendEmail.disabled = false;
+            btnSendEmail.textContent = 'Send';
+            showDashboard(); // Or last active view
+        });
+    }
+
+    if (composeMessage && wordCountEl) {
+        composeMessage.addEventListener('input', function() {
+            let text = composeMessage.value.trim();
+            let count = text ? text.split(/\s+/).filter(Boolean).length : 0;
+            wordCountEl.textContent = count + (count === 1 ? ' word' : ' words');
+        });
+    }
+
+    if (btnSendEmail && composeModal) {
+        btnSendEmail.addEventListener('click', async function() {
+            const recipient = composeTo.value.trim();
+            const subject = composeSubject.value.trim();
+            if (recipient === '') { alert('Please enter a recipient.'); return; }
+            if (subject === '') { alert('Please enter a subject.'); return; }
+
+            let statusDisplay = document.getElementById('composeStatusDisplay');
+            if (!statusDisplay) {
+                statusDisplay = document.createElement('div');
+                statusDisplay.id = 'composeStatusDisplay';
+                const composeBody = composeModal.querySelector('.compose-body');
+                const firstFormGroup = composeBody.querySelector('.form-group'); // Insert before first input
+                if (firstFormGroup) composeBody.insertBefore(statusDisplay, firstFormGroup);
+                else composeBody.appendChild(statusDisplay); // Fallback
+            }
+            statusDisplay.innerHTML = ''; // Clear previous messages
+            btnSendEmail.disabled = true;
+            btnSendEmail.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
+
+            const simulateStep = (message, delayTime) => {
+                return new Promise(resolve => {
+                    const stepMessage = document.createElement('p');
+                    stepMessage.innerHTML = `<i class='bx bx-loader-circle bx-spin' style='margin-right: 8px; color: var(--primary-color);'></i> ${message}`;
+                    statusDisplay.appendChild(stepMessage);
+                    statusDisplay.scrollTop = statusDisplay.scrollHeight; // Auto-scroll
+                    setTimeout(() => {
+                        stepMessage.innerHTML = `<i class='bx bx-check-circle' style='margin-right: 8px; color: var(--success-color);'></i> ${message}`;
+                        resolve();
+                    }, delayTime);
+                });
+            };
+
+            try {
+                await simulateStep(`Preparing message for: <strong>${recipient}</strong>...`, 1000);
+                await simulateStep(`Connecting to mail server...`, 1500);
+                const recipientDomain = recipient.includes('@') ? recipient.split('@')[1] : 'example.com';
+                await simulateStep(`Authenticating & delivering to <strong>${recipientDomain}</strong>...`, 2000);
+                
+                const finalDeliveryMsg = document.createElement('p');
+                finalDeliveryMsg.style.fontWeight = 'bold';
+                finalDeliveryMsg.innerHTML = `<i class='bx bxs-paper-plane' style='margin-right: 8px; color: var(--success-color);'></i> Message sent successfully!`;
+                statusDisplay.appendChild(finalDeliveryMsg);
+                statusDisplay.scrollTop = statusDisplay.scrollHeight;
+
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Wait a bit after success message
+                
+                composeModal.style.display = 'none';
+                if(composeTo) composeTo.value = '';
+                if(composeCc) composeCc.value = '';
+                if(composeSubject) composeSubject.value = '';
+                if(composeMessage) composeMessage.value = '';
+                if(wordCountEl) wordCountEl.textContent = '0 words';
+                showDashboard(); // Or inbox, or last view
+            } catch (error) {
+                console.error("Simulation error:", error);
+                if(statusDisplay) {
+                    const errorMsg = document.createElement('p');
+                    errorMsg.style.color = 'var(--danger-color)';
+                    errorMsg.style.fontWeight = 'bold';
+                    errorMsg.innerHTML = `<i class='bx bx-error-circle' style='margin-right: 8px;'></i> Sending Failed. Please try again.`;
+                    statusDisplay.appendChild(errorMsg);
+                    statusDisplay.scrollTop = statusDisplay.scrollHeight;
+                }
+            } finally {
+                btnSendEmail.disabled = false;
+                btnSendEmail.textContent = 'Send';
+            }
+        });
+    }
+    
+    // Make compose modal draggable
+    let isDragging = false;
+    let offsetX, offsetY;
+    const draggableHeader = document.getElementById('composeHeaderDraggable');
+
+    if (draggableHeader && composeModal) {
+        draggableHeader.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - composeModal.offsetLeft;
+            offsetY = e.clientY - composeModal.offsetTop;
+            draggableHeader.style.cursor = 'grabbing';
+            // Prevent text selection while dragging
+            e.preventDefault(); 
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            let newX = e.clientX - offsetX;
+            let newY = e.clientY - offsetY;
+
+            // Boundary checks (optional, simple example)
+            const maxRight = window.innerWidth - composeModal.offsetWidth;
+            const maxBottom = window.innerHeight - composeModal.offsetHeight;
+
+            newX = Math.max(0, Math.min(newX, maxRight));
+            newY = Math.max(0, Math.min(newY, maxBottom));
+
+            composeModal.style.left = `${newX}px`;
+            composeModal.style.top = `${newY}px`;
+            // Important: If using bottom/right for positioning, this needs to change
+            // The current CSS uses bottom/right for initial position.
+            // For dragging, it's easier if top/left are used, or transform.
+            // Let's switch composeModal's CSS from bottom/right to top/left for dragging.
+            // For now, this will work if initial position is not bottom/right.
+            // The .send CSS is `bottom: 20px; right: 20px;`
+            // This means we need to set top/left explicitly on first drag or convert.
+            // On first drag, convert bottom/right to top/left.
+            if (composeModal.style.bottom || composeModal.style.right) {
+                 composeModal.style.top = composeModal.offsetTop + 'px';
+                 composeModal.style.left = composeModal.offsetLeft + 'px';
+                 composeModal.style.bottom = 'auto';
+                 composeModal.style.right = 'auto';
+            }
+
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            draggableHeader.style.cursor = 'move';
+        });
+    }
+
+
+    // --- Initial Load ---
+    checkLoginStatus();
+    handleResponsive(); // Initial responsive check
+
+});
+</script>
+</body>
+</html>
