@@ -2,1676 +2,842 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login-web</title>
-    <!-- Boxicons CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Shree Bhuvaneshwari Secondary School | SEE Result 2082 | Admin Dashboard</title>
+    <!-- Google Fonts + Icons -->
+<link rel="icon" type="image/x-icon" href="icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <!-- AOS animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #7367f0;
-            --primary-light: #8f85f3;
-            --secondary-color: #82868b;
-            --success-color: #28c76f;
-            --danger-color: #ea5455;
-            --warning-color: #ff9f43;
-            --dark-color: #4b4b4b;
-            --light-color: #f8f8f8;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px;
-            --transition: all 0.3s ease;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: #f5f5f9;
+            font-family: 'Inter', sans-serif;
+            background: #f5f9ff;
             overflow-x: hidden;
-            transition: var(--transition);
         }
 
-        /* Sidebar Styles */
+        :root {
+            --primary: #2c3e8f;
+            --primary-dark: #1e2a6e;
+            --primary-light: #5b7bc0;
+            --secondary: #e9b13b;
+            --secondary-light: #fceeca;
+            --accent: #e67e22;
+            --dark: #0f172a;
+            --gray: #4b5565;
+            --light: #fbfdff;
+            --border: #e9edf2;
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 88px;
+            --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e0e7ed;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        /* Sidebar Premium */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             height: 100%;
             width: var(--sidebar-width);
-            background: #fff;
-            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+            background: linear-gradient(145deg, #ffffff 0%, #fcfaff 100%);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
             transition: var(--transition);
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.02);
         }
 
         .sidebar.collapsed {
-            width: var(--sidebar-collapsed-width);
+            width: var(--sidebar-collapsed);
         }
 
-        .sidebar.collapsed .logo-details .logo_name {
+        .sidebar.collapsed .logo_text,
+        .sidebar.collapsed .nav-links .link_name,
+        .sidebar.collapsed .profile-details .profile-name,
+        .sidebar.collapsed .logout-icon span {
             display: none;
-        }
-
-        .sidebar.collapsed ~ .home-section {
-            left: var(--sidebar-collapsed-width);
-            width: calc(100% - var(--sidebar-collapsed-width));
-        }
-
-        .sidebar .logo-details {
-            height: 60px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        .sidebar .logo-details i {
-            font-size: 28px;
-            color: var(--primary-color);
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .sidebar .logo-details .logo_name {
-            font-size: 20px;
-            color: var(--primary-color);
-            font-weight: 600;
-            margin-left: 10px;
-            transition: var(--transition);
-        }
-
-        .sidebar .nav-links {
-            height: calc(100% - 120px); /* Adjusted for profile details height */
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
-        .sidebar .nav-links::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .sidebar .nav-links::-webkit-scrollbar-thumb {
-            background: var(--secondary-color);
-            border-radius: 10px;
-        }
-
-        .sidebar .nav-links li {
-            position: relative;
-            list-style: none;
-            margin: 8px 0;
-        }
-
-        .sidebar .nav-links li:hover:not(.active) { /* Hover only if not active */
-            background: rgba(115, 103, 240, 0.05);
-        }
-        
-        .sidebar .nav-links li.active { 
-             background: rgba(115, 103, 240, 0.1);
-        }
-        .sidebar .nav-links li.active > a, 
-        .sidebar .nav-links li.active > a i {
-            color: var(--primary-color);
-        }
-
-        .sidebar .nav-links li a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            padding: 10px 20px;
-            white-space: nowrap;
-            transition: var(--transition);
-        }
-
-        .sidebar .nav-links li a i {
-            font-size: 20px;
-            color: var(--secondary-color);
-            min-width: 40px;
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .sidebar .nav-links li a .link_name {
-            font-size: 15px;
-            color: var(--dark-color);
-            font-weight: 500;
-            transition: var(--transition);
-            margin-left: 10px; 
-        }
-
-        .sidebar.collapsed .nav-links li a .link_name {
-            display: none;
-        }
-        
-        .sidebar .nav-links li .sub-menu {
-            padding: 6px 6px 6px 40px; /* Adjusted left padding */
-            background: rgba(115, 103, 240, 0.05);
-            display: none;
-        }
-        
-        .sidebar:not(.collapsed) .nav-links li .sub-menu a {
-            padding: 8px 15px 8px 20px; 
-            font-size: 14px;
-            color: var(--dark-color);
-        }
-
-        .sidebar .nav-links li.showMenu .sub-menu {
-            display: block;
-        }
-
-        .sidebar .nav-links li .sub-menu a:hover,
-        .sidebar .nav-links li .sub-menu a.active {
-            color: var(--primary-color);
-        }
-         .sidebar .nav-links li .sub-menu a.active {
-            font-weight: 500; /* Or some other distinct style */
-        }
-
-
-        /* Styles for sub-menu when sidebar is collapsed (fly-out) */
-        .sidebar.collapsed .nav-links li .sub-menu {
-            position: absolute;
-            left: 100%; 
-            top: -10px; /* Adjust slightly for better alignment */
-            width: 200px;
-            background: #fff;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 0 6px 6px 0;
-            padding: 10px 0; 
-            display: none; 
-            z-index: 1000; 
-        }
-        
-        .sidebar.collapsed .nav-links li .sub-menu a {
-            padding: 10px 20px; 
-            font-size: 14px;
-            color: var(--dark-color);
-            white-space: nowrap;
-            display: block; /* Make sure full width is clickable */
-        }
-        .sidebar.collapsed .nav-links li .sub-menu a .link_name {
-            display: inline-block !important; /* Show link name in flyout */
-            opacity: 1 !important;
-        }
-
-
-        .sidebar.collapsed .nav-links li:hover .sub-menu {
-            display: block; 
-        }
-        
-        .sidebar .nav-links li .arrow {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            color: var(--secondary-color);
-            transition: var(--transition);
-        }
-
-        .sidebar.collapsed .nav-links li .arrow {
-            display: none;
-        }
-
-        .sidebar .nav-links li.showMenu .arrow {
-            transform: translateY(-50%) rotate(180deg);
-            color: var(--primary-color); /* Make arrow active color */
-        }
-
-        .sidebar .profile-details {
-            position: absolute; /* Changed from fixed to absolute for better scroll behavior with nav-links */
-            bottom: 0;
-            left: 0;
-            width: 100%; /* Ensure it takes full width of sidebar */
-            padding: 15px 20px;
-            background: rgba(115, 103, 240, 0.05); /* Lighter background */
-            border-top: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: var(--transition);
-            overflow: hidden;
         }
 
         .sidebar.collapsed .profile-details {
-            /* width: var(--sidebar-collapsed-width); */ /* Already handled by parent */
             justify-content: center;
+            padding: 16px 0;
         }
 
-        .sidebar .profile-details .profile-content {
+        .sidebar.collapsed~.home-section {
+            left: var(--sidebar-collapsed);
+            width: calc(100% - var(--sidebar-collapsed));
+        }
+
+        .logo-area {
             display: flex;
             align-items: center;
+            gap: 12px;
+            padding: 28px 24px;
+            border-bottom: 1px solid var(--border);
         }
-        
-        .sidebar .profile-details .profile-content .avatar { 
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: #fff;
+
+        .logo-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--primary);
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 16px; 
+            color: white;
+            font-size: 26px;
+            box-shadow: 0 12px 18px -8px rgba(27, 40, 90, 0.25);
         }
 
-        .sidebar .profile-details .profile-content .profile-name {
-            margin-left: 15px;
-            white-space: nowrap;
+        .logo_text {
+            font-weight: 800;
+            font-size: 18px;
+            line-height: 1.3;
+            color: var(--primary-dark);
         }
 
-        .sidebar .profile-details .profile-content .profile-name .name {
-            font-size: 14px;
+        .logo_text small {
+            font-size: 10px;
             font-weight: 500;
-            color: var(--dark-color);
+            color: var(--gray);
         }
 
-        .sidebar .profile-details .profile-content .profile-name .role {
-            font-size: 12px;
-            color: var(--secondary-color);
+        .nav-links {
+            flex: 1;
+            list-style: none;
+            padding: 32px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .sidebar.collapsed .profile-details .profile-content .profile-name {
-            display: none;
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+            gap: 14px;
+            transition: 0.2s;
+            font-size: 14px;
         }
 
-        .sidebar .profile-details .logout {
-            color: var(--secondary-color);
-            font-size: 22px; /* Slightly larger logout icon */
+        .nav-links li a i {
+            font-size: 22px;
+            min-width: 28px;
+        }
+
+        .nav-links li.active a {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 14px rgba(27, 40, 90, 0.25);
+        }
+
+        .nav-links li:not(.active):hover a {
+            background: #eeeffa;
+            color: var(--primary);
+        }
+
+        .profile-details {
+            padding: 18px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(248, 250, 252, 0.7);
+        }
+
+        .profile-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .name {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .role {
+            font-size: 10px;
+            color: var(--gray);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .logout-icon {
             cursor: pointer;
-            transition: var(--transition);
-            padding: 5px; /* Easier to click */
+            font-size: 24px;
+            color: var(--gray);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .sidebar .profile-details .logout:hover {
-            color: var(--danger-color);
+        .logout-icon:hover {
+            color: #c0392b;
+            transform: scale(1.02);
         }
 
-        .sidebar.collapsed .profile-details .logout {
-             display: none; /* Hide logout text/icon when collapsed, or adjust if icon only is desired */
-        }
-
-        /* Home Section Styles */
+        /* Home section */
         .home-section {
             position: relative;
             left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
             min-height: 100vh;
-            background: #f5f5f9;
             transition: var(--transition);
-            /* padding: 20px; Not here, but in child elements if needed */
+            background: #f5f9ff;
         }
 
-        .home-section .home-content { /* This is the top bar */
+        .top-navbar {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            padding: 0 32px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            height: 60px;
-            background: #fff;
-            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
-            /* border-radius: 8px; No radius for full width bar */
-            position: sticky; /* Make top bar sticky */
+            border-bottom: 1px solid var(--border);
+            position: sticky;
             top: 0;
-            z-index: 90; /* Below sidebar */
+            z-index: 90;
         }
 
-        .home-section .home-content .bx-menu {
-            font-size: 24px;
-            color: var(--dark-color);
+        .menu-btn {
+            font-size: 28px;
             cursor: pointer;
+            color: var(--primary);
+            transition: 0.2s;
         }
 
-        .home-section .home-content .bx-menu:hover {
-            color: var(--primary-color);
-        }
-        
-        #mainContentArea {
-            padding: 20px; /* Padding for the actual content area below top bar */
+        .menu-btn:hover {
+            color: var(--primary-dark);
+            transform: scale(1.02);
         }
 
-        .home-section .home-content .search-box {
+        .search-wrap {
+            background: #f1f5f9;
+            padding: 8px 24px;
+            border-radius: 60px;
             display: flex;
+            gap: 12px;
             align-items: center;
-            background: #f5f5f9;
-            border-radius: 6px;
-            padding: 5px 15px;
+            width: 340px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
         }
 
-        .home-section .home-content .search-box i {
-            font-size: 18px;
-            color: var(--secondary-color);
-            margin-right: 10px;
+        .search-wrap:focus-within {
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
-        .home-section .home-content .search-box input {
-            border: none;
-            outline: none;
+        .search-wrap input {
             background: transparent;
-            font-size: 14px;
-            width: 200px;
-        }
-
-        .home-section .home-content .profile {
-            display: flex;
-            align-items: center;
-        }
-
-        .home-section .home-content .profile .notification {
-            position: relative;
-            margin-right: 20px;
-            cursor: pointer;
-        }
-
-        .home-section .home-content .profile .notification i {
-            font-size: 22px;
-            color: var(--dark-color);
-        }
-
-        .home-section .home-content .profile .notification .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 16px;
-            height: 16px;
-            background: var(--danger-color);
-            border-radius: 50%;
-            color: #fff;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .home-section .home-content .profile .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px; 
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            position: relative;
-            background-color: #fff;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            width: 400px;
-            max-width: 90%;
-            animation: slideDown 0.3s;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 24px;
-            color: var(--secondary-color);
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: var(--dark-color);
-        }
-
-        .modal-header {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .modal-header h2 {
-            color: var(--primary-color);
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--dark-color);
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(115, 103, 240, 0.2);
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: var(--primary-color);
-            color: #fff;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            outline: none;
+            width: 100%;
             font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
         }
 
-        .btn:hover {
+        .main-container {
+            padding: 36px 42px;
+        }
+
+        /* Hero Card */
+        .hero-card {
+            background: linear-gradient(125deg, var(--primary-dark), var(--primary));
+            border-radius: 40px;
+            padding: 36px 42px;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-card::after {
+            content: "🎓";
+            position: absolute;
+            right: 25px;
+            bottom: 15px;
+            font-size: 110px;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .hero-card h1 {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .hero-card p {
+            opacity: 0.9;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .exam-chip {
+            background: rgba(255, 215, 0, 0.25);
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 60px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Stats Grid */
+        .stats-premium {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 26px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card-glass {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 32px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: all 0.25s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card-glass:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary-light);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 46px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            line-height: 1;
+        }
+
+        /* Directory Cards */
+        .directory-card,
+        .data-card {
+            background: white;
+            border-radius: 36px;
+            padding: 28px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .grid-names {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 14px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .student-name-tile {
+            background: #fefefe;
+            border-radius: 60px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #eef2f0;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .student-name-tile i {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .student-name-tile:hover {
+            background: #fef9e6;
+            border-color: var(--secondary);
+            transform: translateX(6px);
+        }
+
+        .gpa-pill {
+            margin-left: auto;
+            background: #eef2f5;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f0;
+        }
+
+        th {
+            background: #fafcff;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .action-icons i {
+            font-size: 24px;
+            margin: 0 6px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .edit-icon {
+            color: #2c6e4f;
+        }
+
+        .delete-icon {
+            color: #c0392b;
+        }
+
+        .btn-gold {
+            background: var(--primary);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-gold:hover {
             background: var(--primary-light);
             transform: translateY(-2px);
         }
 
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-3 {
-            margin-top: 15px;
-        }
-
-        .text-muted {
-            color: var(--secondary-color);
-            font-size: 13px;
-        }
-
-        .text-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .text-link:hover {
-            text-decoration: underline;
-        }
-
-        .switch-form {
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        /* Dashboard Content Styles */
-        .dashboard-content {
-            /* margin-top: 30px; /* Removed as mainContentArea has padding */
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .card-header h3 {
-            font-size: 18px;
-            color: var(--dark-color);
+        .btn-cancel {
+            background: #eef2f0;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
             font-weight: 600;
+            cursor: pointer;
         }
 
-        .card-header i {
-            font-size: 20px;
-            color: var(--secondary-color);
-        }
-
-        .card-body p {
-            color: var(--secondary-color);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .welcome-message {
-            text-align: center;
-            padding: 40px 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px 0 rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .welcome-message h1 {
-            font-size: 28px;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .welcome-message p {
-            color: var(--secondary-color);
-            font-size: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Compose Email Modal ('send') Styles */
-        .send {
+        /* Modal */
+        .modal-overlay {
+            display: none;
             position: fixed;
-            bottom: 20px; /* Position at bottom right */
-            right: 20px;
-            width: 90%;
-            max-width: 550px; /* Max width for compose */
-            height: auto; /* Auto height based on content */
-            max-height: 80vh; /* Max height to prevent full screen */
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            z-index: 1050; /* Above modals if any overlap */
-            display: none; 
-            flex-direction: column;
-            overflow: hidden;
-            animation: slideUpFromBottom 0.4s ease-out;
-        }
-
-        @keyframes slideUpFromBottom {
-            from { 
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to { 
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .compose-header {
-            padding: 15px 20px;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: space-between;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
             align-items: center;
-            cursor: move; /* Indicate draggable header */
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .compose-header h2 {
-            font-size: 18px;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        .compose-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-send, .btn-discard {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-send {
+        .modal-panel {
             background: white;
-            color: var(--primary-color);
+            width: 540px;
+            max-width: 92%;
+            border-radius: 48px;
+            padding: 36px;
+            animation: floatIn 0.3s;
         }
 
-        .btn-send:hover {
-            background: #f0f0f0;
-        }
-        .btn-send:disabled {
-            background: #e0e0e0;
-            color: #a0a0a0;
-            cursor: not-allowed;
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 34px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+            margin-bottom: 16px;
+        }
 
-        .btn-discard {
-            background: rgba(255,255,255,0.2);
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 62, 143, 0.1);
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1f2f38;
             color: white;
+            padding: 12px 28px;
+            border-radius: 60px;
+            z-index: 1200;
+            opacity: 0;
+            transition: 0.3s;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
         }
 
-        .btn-discard:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .compose-body {
-            padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto; 
-        }
-        .compose-body .form-group { margin-bottom: 10px; } /* Less margin in compose */
-        .compose-body .form-group:last-of-type { margin-bottom: 15px; }
-
-
-        .compose-input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            /* margin-bottom: 15px; /* Handled by form-group */
-            font-size: 14px;
-            transition: var(--transition);
-        }
-
-        .compose-input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(115, 103, 240, 0.2);
-        }
-
-        .compose-textarea {
-            width: 100%;
-            flex: 1; 
-            min-height: 150px; 
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            resize: vertical; 
-            font-size: 14px;
-            line-height: 1.6;
-            transition: var(--transition);
-        }
-
-        .compose-textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(115, 103, 240, 0.2);
-        }
-
-        .compose-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 15px;
-            margin-top: 15px; 
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .attachment-options {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-attachment, .btn-format {
-            padding: 8px 15px;
-            background: #f5f5f9;
-            border: none;
-            border-radius: 6px;
-            color: var(--dark-color);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-attachment:hover, .btn-format:hover {
-            background: #e0e0e0;
-        }
-
-        .word-count {
-            font-size: 12px;
-            color: var(--secondary-color);
-        }
-        #composeStatusDisplay {
-            padding: 10px;
-            margin-top: 0; /* Will be before first form group */
-            margin-bottom: 15px;
-            text-align: left;
-            color: var(--dark-color);
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-            font-size: 13px;
-            line-height: 1.5;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-        #composeStatusDisplay p { margin: 5px 0; }
-
-
-        /* Inbox View Styles */
-        .inbox-container {
-            /* padding: 20px; /* Removed, mainContentArea handles padding */
-            /* margin-top: 0; */
-        }
-
-        .inbox-container h2.inbox-header-title { /* More specific selector */
-            font-size: 24px;
-            color: var(--dark-color);
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .inbox-container h2.inbox-header-title i {
-            margin-right: 10px;
-            color: var(--primary-color);
-        }
-
-
-        .email-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .email-item {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .email-item:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
-        }
-
-        .email-item.unread {
-            border-left: 3px solid var(--primary-color); /* Unread indicator */
-        }
-
-        .email-item.unread .email-sender,
-        .email-item.unread .email-subject {
-            font-weight: 600; 
-            color: var(--dark-color);
-        }
-
-        .email-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .email-sender {
-            font-size: 15px;
-            color: var(--dark-color);
-            display: flex;
-            align-items: center;
-        }
-        .email-sender i {
-            margin-right: 8px;
-            color: var(--secondary-color);
-            font-size: 18px; /* Slightly larger icon */
-        }
-        .email-item.unread .email-sender i {
-            color: var(--primary-color);
-        }
-
-        .email-timestamp {
-            font-size: 12px;
-            color: var(--secondary-color);
-            white-space: nowrap;
-        }
-
-        .email-subject {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .email-snippet {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.4;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 992px) {
-            /* Sidebar forced collapsed look by default on smaller screens */
-            .sidebar:not(.manually-expanded) { /* Add a class if user explicitly expands on small screen */
-                width: var(--sidebar-collapsed-width);
-            }
-            .sidebar:not(.manually-expanded) .logo-details .logo_name {
-                display: none;
-            }
-            .sidebar:not(.manually-expanded) .profile-details .profile-content .profile-name,
-            .sidebar:not(.manually-expanded) .profile-details .logout {
-                display: none;
-            }
-             .sidebar:not(.manually-expanded) .profile-details {
-                justify-content: center;
-                padding: 15px 0;
-            }
-            .sidebar:not(.manually-expanded) ~ .home-section {
-                left: var(--sidebar-collapsed-width);
-                width: calc(100% - var(--sidebar-collapsed-width));
-            }
-            .sidebar:not(.manually-expanded) .nav-links li a .link_name {
-                 display: none;
-            }
-            .sidebar:not(.manually-expanded) .nav-links li .arrow {
-                 display: none;
-            }
-            /* Flyout submenus will still work due to .sidebar.collapsed li:hover .sub-menu */
-
-            .send { /* Compose modal on smaller screens */
-                width: 95%;
-                right: 2.5%;
-                bottom: 10px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .modal-content {
-                margin: 20% auto;
-                width: 90%;
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
             }
 
-            .home-section .home-content .search-box {
-                display: none;
+            .hero-card h1 {
+                font-size: 22px;
             }
-             .compose-header h2 { font-size: 16px; }
-             .compose-actions { gap: 5px; }
-             .btn-send, .btn-discard { padding: 6px 10px; font-size: 13px;}
-             .compose-body { padding: 15px; }
-             .attachment-options { flex-direction: column; align-items: flex-start; gap: 8px; }
-             .send {
-                max-height: 85vh;
-             }
         }
+/* Sidebar Logo Area Styles */
+.sidebar .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar .logo-area .logo-icon {
+    width: 46px;
+    height: 46px;
+    background: var(--primary);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 26px;
+    box-shadow: 0 12px 18px -8px rgba(27, 40, 90, 0.25);
+    overflow: hidden;
+}
+
+.sidebar .logo-area .logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.sidebar .logo-area .logo_text {
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--primary-dark);
+}
+
+.sidebar .logo-area .logo_text small {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--gray);
+}
     </style>
 </head>
 <body>
-<!-- Sidebar Navigation -->
-<div class="sidebar">
-    <div class="logo-details">
-        <i class='bx bxl-codepen'></i>
-        <span class="logo_name">MyApp</span>
-    </div>
-    <ul class="nav-links">
-        <li id="dashboardNavItem">
-            <a href="#" id="dashboardLink">
-                <i class='bx bx-grid-alt'></i>
-                <span class="link_name">Dashboard</span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <i class='bx bx-user'></i>
-                <span class="link_name">Users</span>
-                <i class='bx bx-chevron-down arrow'></i>
-            </a>
-            <ul class="sub-menu">
-                <li><a href="#"><span class="link_name">All Users</span></a></li>
-                <li><a href="#"><span class="link_name">Add User</span></a></li>
-                <li><a href="#"><span class="link_name">Roles</span></a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#">
-                <i class='bx bx-package'></i>
-                <span class="link_name">Products</span>
-                <i class='bx bx-chevron-down arrow'></i>
-            </a>
-            <ul class="sub-menu">
-                <li><a href="#"><span class="link_name">Inventory</span></a></li>
-                <li><a href="#"><span class="link_name">Categories</span></a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#">
-                <i class='bx bx-cart'></i>
-                <span class="link_name">Orders</span>
-            </a>
-        </li>
-        <li id="inboxSentNavItem">
-            <a href="#" id="inboxSentToggle"> <!-- This main link can also toggle if href="#" -->
-                <i class='bx bx-envelope'></i>
-                <span class="link_name">Mail</span>
-                <i class='bx bx-chevron-down arrow'></i>
-            </a>
-            <ul class="sub-menu">
-                <li><a href="#" id="inboxLink"><span class="link_name">Inbox</span></a></li>
-                <li><a href="#" id="sentLink"><span class="link_name">Compose</span></a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#">
-                <i class='bx bx-cog'></i>
-                <span class="link_name">Settings</span>
-            </a>
-        </li>
-    </ul>
-    <div class="profile-details">
-        <div class="profile-content">
-            <div class="avatar" id="avatarInitials">BS</div>
-            <div class="profile-name">
-                <div class="name" id="profileName">Bibekshil Sharma</div>
-                <div class="role" id="profileRole">Admin</div>
-            </div>
+    <div class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><img src="icon.png"></img></div>
+            <div class="logo_text">Shree Bhuvaneshwari<br><small>Secondary School</small></div>
         </div>
-        <i class='bx bx-log-out logout' id="logoutBtn" title="Logout"></i>
-    </div>
-</div>
-
-<!-- Home Section -->
-<section class="home-section">
-    <div class="home-content"> <!-- This is the top bar -->
-        <i class='bx bx-menu' id="sidebarToggle"></i>
-        <div class="search-box">
-            <i class='bx bx-search'></i>
-            <input type="text" placeholder="Search...">
-        </div>
-        <div class="profile">
-            <div class="notification">
-                <i class='bx bx-bell'></i>
-                <span class="badge">3</span>
+        <ul class="nav-links">
+            <li id="navDashboard"><a href="#" id="dashboardBtn"><i class='bx bx-home-alt'></i><span class="link_name">Dashboard</span></a></li>
+            <li id="navStudents"><a href="#" id="studentsBtn"><i class='bx bx-group'></i><span class="link_name">Student Records</span></a></li>
+            <li><a href="#"><i class='bx bx-cog'></i><span class="link_name">Settings</span></a></li>
+        </ul>
+        <div class="profile-details">
+            <div class="profile-content">
+                <div class="avatar" id="sideAvatar">GU</div>
+                <div class="profile-name">
+                    <div class="name" id="sideName">Guest</div>
+                    <div class="role" id="sideRole">Visitor</div>
+                </div>
             </div>
-            <div class="avatar" id="topAvatarInitials">BS</div>
+            <div class="logout-icon" id="logoutGlobal"><i class='bx bx-log-out-circle'></i><span>Logout</span></div>
         </div>
     </div>
 
-    <!-- This is where dashboard content OR inbox content will go -->
-    <div id="mainContentArea">
-        <!-- Dashboard Content (will be hidden/shown by default) -->
-        <div class="dashboard-content" id="dashboardView" style="display: none;">
-            <div class="welcome-message">
-                <h1>Welcome to Your Dashboard</h1>
-                <p>This is a modern responsive sidebar template. Explore the features and customize it to fit your needs.</p>
+    <section class="home-section">
+        <div class="top-navbar">
+            <i class='bx bx-menu menu-btn' id="toggleSidebar"></i>
+            <div class="search-wrap"><i class='bx bx-search-alt'></i><input type="text" id="globalSearchInput" placeholder="Search by name or symbol number..."></div>
+            <div class="avatar" id="topAvatar" style="width:44px;height:44px;">GU</div>
+        </div>
+        <div class="main-container" id="appRoot">
+            <!-- DASHBOARD VIEW -->
+            <div id="dashboardPanel">
+                <div class="hero-card" data-aos="fade-up">
+                    <h1>Shree Bhuvaneshwari Secondary School</h1>
+                    <p>Badkot-6, Sisaiya, Kanchanpur, Nepal</p>
+                    <div class="exam-chip"><i class='bx bxs-graduation'></i> SEE Examination Result 2082 (2025) <i class='bx bxs-graduation'></i></div>
+                </div>
+                <div class="stats-premium">
+                    <div class="stat-card-glass"><div class="stat-title"><i class='bx bx-user-plus'></i> Total Students</div><div class="stat-number" id="totalStat">0</div></div>
+                    <div class="stat-card-glass"><div class="stat-title"><i class='bx bx-bar-chart-alt'></i> Average GPA</div><div class="stat-number" id="avgGpaStat">0.00</div></div>
+                    <div class="stat-card-glass"><div class="stat-title"><i class='bx bx-trophy'></i> Top Achievers (GPA≥3.5)</div><div class="stat-number" id="highStat">0</div></div>
+                    <div class="stat-card-glass"><div class="stat-title"><i class='bx bx-check-circle'></i> Pass % (≥3.0)</div><div class="stat-number" id="passPercentStat">0%</div></div>
+                </div>
+                <div class="directory-card">
+                    <h3 style="display: flex; gap: 12px; align-items: center; margin-bottom: 18px;"><i class='bx bx-list-ul' style="color: var(--primary);"></i><i class='bx bxs-graduation'></i>Complete Student Roll (39 Students)</h3>
+                    <div id="allNamesContainer" class="grid-names"></div>
+                </div>
+                <div class="data-card">
+                    <h3 style="margin-bottom: 18px;"><i class='bx bx-crown' style="color: var(--secondary);"></i> Top 10 Students by GPA</h3>
+                    <table id="topTenTable"><thead><tr><th>Full Name</th><th>Symbol No.</th><th>GPA</th></tr></thead><tbody id="topTenBody"></tbody></table>
+                </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Quick Stats</h3>
-                    <i class='bx bx-stats'></i>
+            <!-- STUDENT MANAGEMENT PANEL -->
+            <div id="studentsPanel" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap;">
+                    <h2><i class='bx bx-data'></i> Full Student Database (SEE Results)</h2>
+                    <button class="btn-gold" id="addStdBtn"><i class='bx bx-plus-medical'></i> Add New Student</button>
                 </div>
-                <div class="card-body">
-                    <p>Display key metrics and important information here. The layout is responsive and adapts to different screen sizes.</p>
-                </div>
-            </div>
-             <div class="card">
-                <div class="card-header">
-                    <h3>Recent Activity</h3>
-                    <i class='bx bx-list-ul'></i>
-                </div>
-                <div class="card-body">
-                    <p>Show a feed of recent activities or updates relevant to the user.</p>
+                <div class="data-card">
+                    <table id="masterStudentTable" width="100%">
+                        <thead><tr><th>#</th><th>Full Name</th><th>Symbol No.</th><th>Date of Birth</th><th>GPA</th><th>Actions</th></tr></thead>
+                        <tbody id="masterTableBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Inbox Content (will be dynamically created and shown here) -->
-        <!-- Container for inbox will be added by JS if needed -->
-    </div>
-</section>
+    <!-- MODAL -->
+    <div id="studentModal" class="modal-overlay"><div class="modal-panel"><h3 id="modalTitle" style="margin-bottom: 24px;">Student Details</h3><form id="studentForm"><input type="hidden" id="editId"><input type="text" id="stdName" class="form-input" placeholder="Full Name" required><input type="text" id="stdSymbol" class="form-input" placeholder="Symbol Number" required><input type="date" id="stdDob" class="form-input" required><input type="number" step="0.01" min="0" max="4" id="stdGpa" class="form-input" placeholder="GPA (0.00 - 4.00)" required><div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 20px;"><button type="button" class="btn-cancel" id="closeModalBtn">Cancel</button><button type="submit" class="btn-gold">Save Student</button></div></form></div></div>
+    <div id="toastMessage" class="toast-message"></div>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" data-modal-id="loginModal">×</span>
-            <div class="modal-header">
-                <h2>Login</h2>
-            </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="btn btn-block">Login</button>
-                <div class="switch-form mt-3 text-center">
-                    <span class="text-muted">Don't have an account? </span>
-                    <span class="text-link" id="showRegister">Register</span>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" data-modal-id="registerModal">×</span>
-            <div class="modal-header">
-                <h2>Register</h2>
-            </div>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="registerName">Full Name</label>
-                    <input type="text" id="registerName" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Password</label>
-                    <input type="password" id="registerPassword" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerRole">Role</label>
-                    <select id="registerRole">
-                        <option value="User">User</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-block">Register</button>
-                <div class="switch-form mt-3 text-center">
-                    <span class="text-muted">Already have an account? </span>
-                    <span class="text-link" id="showLogin">Login</span>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- Compose Email Modal -->
-    <div id="composeModal" class="send"> <!-- Changed ID to composeModal for clarity -->
-        <div class="compose-header" id="composeHeaderDraggable">
-            <h2>Compose Email</h2>
-            <div class="compose-actions">
-                <button class="btn-send" id="btnSendEmail">Send</button>
-                <button class="btn-discard" id="btnDiscardEmail">Discard</button>
-            </div>
-        </div>
-        <div class="compose-body">
-             <!-- Placeholder for status messages -->
-            <div class="form-group">
-                <input type="text" placeholder="To" class="compose-input" id="composeTo">
-            </div>
-            <div class="form-group">
-                <input type="text" placeholder="Cc" class="compose-input" id="composeCc">
-            </div>
-            <div class="form-group">
-                <input type="text" placeholder="Subject" class="compose-input" id="composeSubject">
-            </div>
-            <textarea class="compose-textarea" placeholder="Write your message here..." id="composeMessage"></textarea>
-            <div class="compose-footer">
-                <div class="attachment-options">
-                    <button class="btn-attachment"><i class='bx bx-paperclip'></i> Attach</button>
-                    <button class="btn-format"><i class='bx bx-font'></i> Format</button>
-                </div>
-                <div class="word-count" id="wordCount">0 words</div>
-            </div>
-        </div>
-    </div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const allNavLinks = document.querySelectorAll('.sidebar .nav-links li');
-
-    const mainContentArea = document.getElementById('mainContentArea');
-    const dashboardView = document.getElementById('dashboardView');
-    
-    const dashboardLink = document.getElementById('dashboardLink');
-    const dashboardNavItem = document.getElementById('dashboardNavItem');
-    const inboxLink = document.getElementById('inboxLink');
-    const inboxSentNavItem = document.getElementById('inboxSentNavItem');
-    const sentLink = document.getElementById('sentLink'); // For "Compose"
-
-    const loginModal = document.getElementById('loginModal');
-    const registerModal = document.getElementById('registerModal');
-    const composeModal = document.getElementById('composeModal');
-
-    // --- User Authentication & UI Update ---
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-    function updateUserUI(user) {
-        if (user && user.name) {
-            const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            const profileNameEl = document.getElementById('profileName');
-            const profileRoleEl = document.getElementById('profileRole');
-            const avatarInitialsEl = document.getElementById('avatarInitials');
-            const topAvatarInitialsEl = document.getElementById('topAvatarInitials');
-
-            if (profileNameEl) profileNameEl.textContent = user.name;
-            if (profileRoleEl) profileRoleEl.textContent = user.role;
-            if (avatarInitialsEl) avatarInitialsEl.textContent = initials;
-            if (topAvatarInitialsEl) topAvatarInitialsEl.textContent = initials;
-        }
-    }
-
-    function checkLoginStatus() {
-        currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) {
-            if (loginModal) loginModal.style.display = 'block';
-            if (dashboardView) dashboardView.style.display = 'none'; // Hide content if not logged in
-            const inboxViewContainer = document.getElementById('inboxViewContainer');
-            if (inboxViewContainer) inboxViewContainer.style.display = 'none';
-        } else {
-            updateUserUI(currentUser);
-            showDashboard(); // Show dashboard by default if logged in
-        }
-    }
-
-    // --- Sidebar Logic ---
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            // Optional: Add a class to indicate manual toggle on small screens
-            if (window.innerWidth <= 992) {
-                sidebar.classList.toggle('manually-expanded', !sidebar.classList.contains('collapsed'));
-            }
-        });
-    }
-
-    allNavLinks.forEach(liElement => {
-        const primaryAnchor = liElement.querySelector('a:not(.sub-menu a)'); // Get the main link, not submenu links
-        const subMenu = liElement.querySelector('.sub-menu');
-
-        if (primaryAnchor && subMenu) { // If this LI has a submenu
-            primaryAnchor.addEventListener('click', function(e) {
-                // Prevent default only if it's a pure toggle link (#) or has an arrow
-                if (primaryAnchor.getAttribute('href') === '#' || primaryAnchor.querySelector('.arrow')) {
-                    e.preventDefault();
-                }
-
-                // If a submenu item itself is clicked, its specific handler (e.g., inboxLink) will manage views.
-                // Don't toggle the parent menu if a direct sub-item link (not just text span) is clicked.
-                if (e.target.closest('.sub-menu a') && e.target.closest('.sub-menu a').getAttribute('href') !== '#') {
-                     // If an actual link in submenu clicked, let it proceed or be handled by its own listener
-                    return;
-                }
-                
-                if (!sidebar.classList.contains('collapsed')) {
-                    const isCurrentlyOpen = liElement.classList.contains('showMenu');
-                    // Close all other open submenus
-                    allNavLinks.forEach(otherLi => {
-                        if (otherLi !== liElement && otherLi.classList.contains('showMenu')) {
-                            otherLi.classList.remove('showMenu');
-                        }
-                    });
-                    // Toggle the current one if it wasn't already open OR if it's a different one being opened
-                    if (!isCurrentlyOpen || !allNavLinks.includes(liElement)) {
-                       if(!isCurrentlyOpen) liElement.classList.add('showMenu');
-                    } else {
-                         liElement.classList.remove('showMenu');
-                    }
-                }
-            });
-        }
-    });
-
-    // --- View Switching Logic ---
-    function clearAllActiveStatesAndViews() {
-        allNavLinks.forEach(li => {
-            li.classList.remove('active');
-            const subLinks = li.querySelectorAll('.sub-menu a');
-            subLinks.forEach(sl => sl.classList.remove('active'));
-        });
-        if (dashboardView) dashboardView.style.display = 'none';
-        const inboxViewContainer = document.getElementById('inboxViewContainer');
-        if (inboxViewContainer) inboxViewContainer.style.display = 'none';
-    }
-
-    function showDashboard() {
-        if (!currentUser) return; // Don't show if not logged in
-        clearAllActiveStatesAndViews();
-        if (dashboardView) dashboardView.style.display = 'block';
-        if (dashboardNavItem) dashboardNavItem.classList.add('active');
-
-        // Close any open submenus when dashboard is selected (unless sidebar is collapsed)
-        if (!sidebar.classList.contains('collapsed')) {
-            allNavLinks.forEach(li => {
-                if (li.classList.contains('showMenu')) {
-                    li.classList.remove('showMenu');
-                }
-            });
-        }
-    }
-
-    function showInbox() {
-        if (!currentUser) return; // Don't show if not logged in
-        clearAllActiveStatesAndViews();
-        
-        let inboxViewContainer = document.getElementById('inboxViewContainer');
-        if (!inboxViewContainer) {
-            inboxViewContainer = document.createElement('div');
-            inboxViewContainer.id = 'inboxViewContainer';
-            inboxViewContainer.className = 'inbox-container';
-            if (mainContentArea) mainContentArea.appendChild(inboxViewContainer);
-        }
-        inboxViewContainer.style.display = 'block';
-        inboxViewContainer.innerHTML = ''; // Clear previous content
-
-        const inboxHeader = document.createElement('h2');
-        inboxHeader.className = 'inbox-header-title'; // Added class for styling
-        inboxHeader.innerHTML = "<i class='bx bxs-inbox'></i> Inbox";
-        inboxViewContainer.appendChild(inboxHeader);
-
-        const emailList = document.createElement('ul');
-        emailList.className = 'email-list';
-        inboxViewContainer.appendChild(emailList);
-
-        const sampleInboxMessages = [
-            { id: 1, sender: 'Alice Wonderland', subject: 'Meeting Reminder', snippet: 'Just a friendly reminder about our meeting tomorrow at 10 AM regarding the new project proposal.', timestamp: '10:32 AM', unread: true, avatarIcon: 'bxs-user-circle' },
-            { id: 2, sender: 'Bob The Builder', subject: 'Project Update: Alpha Phase', snippet: 'Good news! The alpha phase of the project has been successfully completed. See attached report for details.', timestamp: 'Yesterday', unread: false, avatarIcon: 'bxs-hard-hat' },
-            { id: 3, sender: 'Tech Newsletter', subject: 'Weekly Tech Roundup - AI Advancements', snippet: 'This week in tech: new breakthroughs in AI, the latest gadget releases, and more. Click to read!', timestamp: 'Oct 28', unread: true, avatarIcon: 'bxs-news' },
-            { id: 4, sender: 'HR Department', subject: 'Important: Company Policy Update', snippet: 'Please review the updated company policy document attached. Acknowledgment required by EOD Friday.', timestamp: 'Oct 27', unread: false, avatarIcon: 'bxs-briefcase-alt-2' },
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // ---------- FULL SEE DATASET (39 students) ----------
+        const FULL_SEE_DATA = [
+            { id:1, name:"DEV RAJ PANT", symbol:"077028629E", dob:"2067-08-22", gpa:3.79 },
+            { id:2, name:"PREMA JAGARI", symbol:"07702901K", dob:"2067-10-08", gpa:3.58 },
+            { id:3, name:"MAMITA RANA", symbol:"07702887W", dob:"2066-05-10", gpa:3.56 },
+            { id:4, name:"REJINA DANGAURA", symbol:"07702908R", dob:"2066-01-19", gpa:3.56 },
+            { id:5, name:"PREM RAJ PANT", symbol:"07702900J", dob:"2066-11-03", gpa:3.31 },
+            { id:6, name:"PRATIKSHYA KUMARI BOHARA", symbol:"07702899I", dob:"2066-01-23", gpa:3.25 },
+            { id:7, name:"BISHAL ROKAYA", symbol:"07702865A", dob:"2065-01-14", gpa:3.21 },
+            { id:8, name:"DEBAKI PANT", symbol:"07702868D", dob:"2066-10-07", gpa:3.20 },
+            { id:9, name:"RAJESH BHATT", symbol:"07702907Q", dob:"2066-10-15", gpa:3.17 },
+            { id:10, name:"LAXMI BIST", symbol:"07702884T", dob:"2067-10-01", gpa:3.13 },
+            { id:11, name:"MANJARI BHATT", symbol:"07702890Z", dob:"2068-03-03", gpa:3.12 },
+            { id:12, name:"AADITYA DANGAURA", symbol:"07702846H", dob:"2067-06-01", gpa:3.09 },
+            { id:13, name:"HIMAL THAPA", symbol:"07702877M", dob:"2066-06-29", gpa:3.09 },
+            { id:14, name:"DHURB RAJ PANT", symbol:"07702870F", dob:"2067-12-14", gpa:3.03 },
+            { id:15, name:"GAURAB PANT", symbol:"07702873I", dob:"2066-09-06", gpa:3.02 },
+            { id:16, name:"NEHA DANGAURA", symbol:"07702892B", dob:"2066-04-05", gpa:3.00 },
+            { id:17, name:"ASMA OAD", symbol:"07702855Q", dob:"2068-03-29", gpa:2.94 },
+            { id:18, name:"BIBEKSHIL SHARMA", symbol:"077028619W", dob:"2067-06-13", gpa:2.92 },
+            { id:19, name:"SARIKA BIST", symbol:"07702919C", dob:"2066-07-11", gpa:2.90 },
+            { id:20, name:"AASHMA ROKAYA", symbol:"07702847I", dob:"2067-07-03", gpa:2.88 },
+            { id:21, name:"ASHOK SARKI", symbol:"07702854P", dob:"2065-10-27", gpa:2.85 },
+            { id:22, name:"GAYATRI PANT", symbol:"07702874J", dob:"2068-11-19", gpa:2.84 },
+            { id:23, name:"MANJU PANT", symbol:"07702891A", dob:"2068-07-06", gpa:2.84 },
+            { id:24, name:"PRAGYA PANT", symbol:"07702897G", dob:"2067-05-05", gpa:2.84 },
+            { id:25, name:"LAXMI NATH", symbol:"07702885U", dob:"2065-08-07", gpa:2.83 },
+            { id:26, name:"ANUSKA DANGAURA", symbol:"07702852N", dob:"2067-05-06", gpa:2.82 },
+            { id:27, name:"CHANDRA PRAKASH PANT", symbol:"07702866B", dob:"2068-10-25", gpa:2.80 },
+            { id:28, name:"MANISH OAD", symbol:"07702889Y", dob:"2065-11-08", gpa:2.76 },
+            { id:29, name:"BHAWANA PANT", symbol:"07702859U", dob:"2066-09-14", gpa:2.75 },
+            { id:30, name:"ANJALI BIST", symbol:"07702850L", dob:"2067-11-07", gpa:2.72 },
+            { id:31, name:"BHUWAN DANI", symbol:"07702860V", dob:"2065-10-10", gpa:2.70 },
+            { id:32, name:"BASANT KHATRI", symbol:"07702858T", dob:"2068-11-21", gpa:2.69 },
+            { id:33, name:"DIPESH BOHARA", symbol:"07702871G", dob:"2066-02-07", gpa:2.67 },
+            { id:34, name:"DIPIKA SHAHU", symbol:"07702872H", dob:"2065-09-07", gpa:2.67 },
+            { id:35, name:"ASMITA MAHARA", symbol:"07702856R", dob:"2066-03-16", gpa:2.66 },
+            { id:36, name:"SAKUNTALA DANGAURA", symbol:"07702914X", dob:"2066-05-08", gpa:2.65 },
+            { id:37, name:"PUSPALATA BHATT", symbol:"07702904N", dob:"2068-06-10", gpa:2.56 },
+            { id:38, name:"PUJA KUMARI BHATT", symbol:"07702902L", dob:"2066-11-19", gpa:2.55 },
+            { id:39, name:"AKASH RANA", symbol:"07702849K", dob:"2064-07-25", gpa:2.44 }
         ];
 
-        if (sampleInboxMessages.length === 0) {
-            emailList.innerHTML = '<p>Your inbox is empty.</p>';
-        } else {
-            sampleInboxMessages.forEach(msg => {
-                const listItem = document.createElement('li');
-                listItem.className = 'email-item';
-                if (msg.unread) listItem.classList.add('unread');
-                
-                listItem.innerHTML = `
-                    <div class="email-header">
-                        <span class="email-sender"><i class='bx ${msg.avatarIcon || 'bxs-user'}'></i> ${msg.sender}</span>
-                        <span class="email-timestamp">${msg.timestamp}</span>
-                    </div>
-                    <div class="email-subject">${msg.subject}</div>
-                    <div class="email-snippet">${msg.snippet}</div>
-                `;
-                listItem.addEventListener('click', () => {
-                    alert(`Opening email from: ${msg.sender}\nSubject: ${msg.subject}\n\n(Full email view not implemented)`);
-                    if (msg.unread) {
-                        msg.unread = false;
-                        listItem.classList.remove('unread');
-                    }
-                });
-                emailList.appendChild(listItem);
+        let students = [];
+        let masterTable = null;
+        let currentUser = null;
+
+        function initData() { students = JSON.parse(JSON.stringify(FULL_SEE_DATA)); localStorage.setItem("see_students", JSON.stringify(students)); renderAll(); }
+        function saveLocal() { localStorage.setItem("see_students", JSON.stringify(students)); }
+        function showToast(msg) { const t = document.getElementById("toastMessage"); t.innerText = msg; t.style.opacity = "1"; setTimeout(()=> t.style.opacity = "0", 2500); }
+
+        function renderAll() {
+            const total = students.length;
+            const avgGpa = total ? (students.reduce((a,b)=>a+b.gpa,0)/total).toFixed(2) : "0.00";
+            const highCount = students.filter(s=>s.gpa>=3.5).length;
+            const passCount = students.filter(s=>s.gpa >= 3.0).length;
+            const passPercent = total ? ((passCount/total)*100).toFixed(2) : "0";
+            document.getElementById("totalStat").innerText = total;
+            document.getElementById("avgGpaStat").innerText = avgGpa;
+            document.getElementById("highStat").innerText = highCount;
+            document.getElementById("passPercentStat").innerText = passPercent + "%";
+
+            const sorted = [...students].sort((a,b)=>a.name.localeCompare(b.name));
+            document.getElementById("allNamesContainer").innerHTML = sorted.map(s => `<div class="student-name-tile"><i class='bx bx-user-circle'></i> ${escapeHtml(s.name)} <span class="gpa-pill">${s.gpa.toFixed(2)} GPA</span></div>`).join('');
+
+            const top10 = [...students].sort((a,b)=>b.gpa - a.gpa).slice(0,10);
+            document.getElementById("topTenBody").innerHTML = top10.map(s => `<tr><td><strong>${escapeHtml(s.name)}</strong></td><td>${s.symbol}</td><td style="color:var(--primary);font-weight:800;">${s.gpa.toFixed(2)}</td></tr>`).join('');
+
+            if (masterTable) masterTable.destroy();
+            const tbody = document.getElementById("masterTableBody");
+            tbody.innerHTML = "";
+            students.forEach((s, idx) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = idx+1;
+                row.insertCell(1).innerText = s.name;
+                row.insertCell(2).innerText = s.symbol;
+                row.insertCell(3).innerText = s.dob;
+                row.insertCell(4).innerHTML = `<strong>${s.gpa.toFixed(2)}</strong>`;
+                const cell = row.insertCell(5);
+                cell.className = "action-icons";
+                cell.innerHTML = `<i class='bx bx-edit-alt edit-icon' data-id='${s.id}'></i> <i class='bx bx-trash delete-icon' data-id='${s.id}'></i>`;
             });
+            masterTable = $('#masterStudentTable').DataTable({ paging: true, searching: true, pageLength: 10, order: [[4, 'desc']], language: { search: "Search:" } });
+            $('#globalSearchInput').off('keyup').on('keyup', function() { if(masterTable) masterTable.search(this.value).draw(); });
+            attachTableEvents();
         }
 
-        if (inboxSentNavItem) {
-            inboxSentNavItem.classList.add('active');
-            if (!sidebar.classList.contains('collapsed') && !inboxSentNavItem.classList.contains('showMenu')) {
-                // Close other submenus first
-                allNavLinks.forEach(otherLi => {
-                    if (otherLi !== inboxSentNavItem && otherLi.classList.contains('showMenu')) {
-                        otherLi.classList.remove('showMenu');
-                    }
-                });
-                inboxSentNavItem.classList.add('showMenu');
-            }
+        function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});}
+        function attachTableEvents() {
+            document.querySelectorAll('.edit-icon').forEach(el => { el.removeEventListener('click', editFn); el.addEventListener('click', editFn); });
+            document.querySelectorAll('.delete-icon').forEach(el => { el.removeEventListener('click', delFn); el.addEventListener('click', delFn); });
         }
-        if (inboxLink) inboxLink.classList.add('active');
-    }
+        function editFn(e) { const id = parseInt(e.currentTarget.getAttribute('data-id')); const student = students.find(s=>s.id===id); if(student){ document.getElementById("editId").value = student.id; document.getElementById("stdName").value = student.name; document.getElementById("stdSymbol").value = student.symbol; document.getElementById("stdDob").value = student.dob; document.getElementById("stdGpa").value = student.gpa; document.getElementById("modalTitle").innerText = "Edit Student"; document.getElementById("studentModal").style.display = "flex"; } }
+        function delFn(e) { const id = parseInt(e.currentTarget.getAttribute('data-id')); if(confirm("Are you sure you want to delete this record?")){ students = students.filter(s=>s.id !== id); saveLocal(); renderAll(); showToast("Record deleted successfully"); } }
 
-    if (dashboardLink) {
-        dashboardLink.addEventListener('click', (e) => {
+        document.getElementById("studentForm").addEventListener("submit", (e) => {
             e.preventDefault();
-            showDashboard();
-        });
-    }
-    if (inboxLink) {
-        inboxLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            showInbox();
-        });
-    }
-
-    // --- Modal Logic ---
-    const showRegisterBtn = document.getElementById('showRegister');
-    const showLoginBtn = document.getElementById('showLogin');
-    const closeButtons = document.querySelectorAll('.modal .close');
-
-    if (showRegisterBtn && registerModal && loginModal) {
-        showRegisterBtn.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-            registerModal.style.display = 'block';
-        });
-    }
-    if (showLoginBtn && registerModal && loginModal) {
-        showLoginBtn.addEventListener('click', () => {
-            registerModal.style.display = 'none';
-            loginModal.style.display = 'block';
-        });
-    }
-    closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const modalId = button.dataset.modalId;
-            if(modalId) document.getElementById(modalId).style.display = 'none';
-        });
-    });
-    window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = 'none';
-        }
-    });
-
-    // --- Auth Form Submissions ---
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.email === email && u.password === password); // Note: Plain text password, not secure!
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                updateUserUI(user);
-                if (loginModal) loginModal.style.display = 'none';
-                alert(`Welcome back, ${user.name}!`);
-                showDashboard();
+            const editId = document.getElementById("editId").value;
+            const name = document.getElementById("stdName").value.trim();
+            const symbol = document.getElementById("stdSymbol").value.trim();
+            const dob = document.getElementById("stdDob").value;
+            let gpa = parseFloat(document.getElementById("stdGpa").value);
+            if(isNaN(gpa)) gpa=0; if(gpa>4) gpa=4;
+            if(!name||!symbol||!dob) { alert("All fields are required"); return; }
+            if(editId) {
+                const idx = students.findIndex(s=>s.id===parseInt(editId));
+                if(idx !== -1) students[idx] = {...students[idx], name, symbol, dob, gpa};
+                showToast("Student updated successfully");
             } else {
-                alert('Invalid email or password!');
+                const newId = students.length ? Math.max(...students.map(s=>s.id))+1 : 40;
+                students.push({ id: newId, name, symbol, dob, gpa });
+                showToast("New student added");
             }
+            saveLocal(); renderAll();
+            document.getElementById("studentModal").style.display = "none";
+            document.getElementById("studentForm").reset();
+            document.getElementById("editId").value = "";
         });
-    }
+        document.getElementById("addStdBtn").addEventListener("click", () => { document.getElementById("editId").value = ""; document.getElementById("studentForm").reset(); document.getElementById("modalTitle").innerText = "New Student"; document.getElementById("studentModal").style.display = "flex"; });
+        document.getElementById("closeModalBtn").addEventListener("click", () => document.getElementById("studentModal").style.display = "none");
+        window.onclick = (e) => { if(e.target.classList.contains("modal-overlay")) document.getElementById("studentModal").style.display = "none"; };
 
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value; // Note: Plain text password!
-            const role = document.getElementById('registerRole').value;
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users.some(u => u.email === email)) {
-                alert('User with this email already exists!');
-                return;
-            }
-            const newUser = { name, email, password, role };
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-            updateUserUI(newUser);
-            if (registerModal) registerModal.style.display = 'none';
-            alert('Registration successful! Welcome.');
-            showDashboard();
-        });
-    }
-
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function() {
-            localStorage.removeItem('currentUser');
-            currentUser = null; // Clear current user variable
-            // Clear UI fields related to user
-            const profileNameEl = document.getElementById('profileName');
-            const profileRoleEl = document.getElementById('profileRole');
-            const avatarInitialsEl = document.getElementById('avatarInitials');
-            const topAvatarInitialsEl = document.getElementById('topAvatarInitials');
-            if(profileNameEl) profileNameEl.textContent = "Guest";
-            if(profileRoleEl) profileRoleEl.textContent = "";
-            if(avatarInitialsEl) avatarInitialsEl.textContent = "G";
-            if(topAvatarInitialsEl) topAvatarInitialsEl.textContent = "G";
-
-            checkLoginStatus(); // This will show the login modal
-        });
-    }
-
-    // --- Responsive Handling ---
-    function handleResponsive() {
-        if (sidebar) {
-            if (window.innerWidth <= 992 && !sidebar.classList.contains('manually-expanded')) {
-                sidebar.classList.add('collapsed');
-            } else if (window.innerWidth > 992 && !sidebar.classList.contains('manually-expanded')) {
-                // Only auto-expand on larger screens if not manually collapsed by user preference (if that feature were added)
-                // For now, this just ensures it's expanded if window is large enough unless user collapsed it.
-                sidebar.classList.remove('collapsed');
-                 sidebar.classList.remove('manually-expanded'); // Clear manual state on resize to larger
-            }
+        // Authentication system
+        function initAuth() {
+            if(!localStorage.getItem("app_users")) localStorage.setItem("app_users", JSON.stringify([{ id:1, name:"Bivekshil Sharma", email:"admin@see.edu", password:"admin123", role:"Principal", securityAnswer:"green"}]));
+            const current = localStorage.getItem("current_app_user");
+            if(current) { currentUser = JSON.parse(current); applyUI(currentUser); hideAuth(); showDashboardView(); }
+            else showAuthModal();
         }
-    }
-    window.addEventListener('resize', handleResponsive);
-    
-
-    // --- Compose Email Modal Logic ---
-    const btnDiscardEmail = document.getElementById('btnDiscardEmail');
-    const btnSendEmail = document.getElementById('btnSendEmail');
-    const composeTo = document.getElementById('composeTo');
-    const composeCc = document.getElementById('composeCc');
-    const composeSubject = document.getElementById('composeSubject');
-    const composeMessage = document.getElementById('composeMessage');
-    const wordCountEl = document.getElementById('wordCount');
-
-    if (sentLink && composeModal) { // "sentLink" is used as Compose button
-        sentLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (!currentUser) { alert("Please log in to compose an email."); return; }
-            composeModal.style.display = 'flex';
-             // Activate parent LI and this link
-            clearAllActiveStatesAndViews(); // Clear other views
-            if (inboxSentNavItem) {
-                inboxSentNavItem.classList.add('active');
-                 if (!sidebar.classList.contains('collapsed') && !inboxSentNavItem.classList.contains('showMenu')) {
-                     allNavLinks.forEach(otherLi => {
-                        if (otherLi !== inboxSentNavItem && otherLi.classList.contains('showMenu')) {
-                            otherLi.classList.remove('showMenu');
-                        }
-                    });
-                    inboxSentNavItem.classList.add('showMenu');
-                 }
-            }
-            sentLink.classList.add('active');
-
-
-            const statusDisplay = document.getElementById('composeStatusDisplay');
-            if (statusDisplay) statusDisplay.remove(); // Remove old status display
-        });
-    }
-
-    if (btnDiscardEmail && composeModal) {
-        btnDiscardEmail.addEventListener('click', function() {
-            composeModal.style.display = 'none';
-            if(composeTo) composeTo.value = '';
-            if(composeCc) composeCc.value = '';
-            if(composeSubject) composeSubject.value = '';
-            if(composeMessage) composeMessage.value = '';
-            if(wordCountEl) wordCountEl.textContent = '0 words';
-            const statusDisplay = document.getElementById('composeStatusDisplay');
-            if (statusDisplay) statusDisplay.remove();
-            btnSendEmail.disabled = false;
-            btnSendEmail.textContent = 'Send';
-            showDashboard(); // Or last active view
-        });
-    }
-
-    if (composeMessage && wordCountEl) {
-        composeMessage.addEventListener('input', function() {
-            let text = composeMessage.value.trim();
-            let count = text ? text.split(/\s+/).filter(Boolean).length : 0;
-            wordCountEl.textContent = count + (count === 1 ? ' word' : ' words');
-        });
-    }
-
-    if (btnSendEmail && composeModal) {
-        btnSendEmail.addEventListener('click', async function() {
-            const recipient = composeTo.value.trim();
-            const subject = composeSubject.value.trim();
-            if (recipient === '') { alert('Please enter a recipient.'); return; }
-            if (subject === '') { alert('Please enter a subject.'); return; }
-
-            let statusDisplay = document.getElementById('composeStatusDisplay');
-            if (!statusDisplay) {
-                statusDisplay = document.createElement('div');
-                statusDisplay.id = 'composeStatusDisplay';
-                const composeBody = composeModal.querySelector('.compose-body');
-                const firstFormGroup = composeBody.querySelector('.form-group'); // Insert before first input
-                if (firstFormGroup) composeBody.insertBefore(statusDisplay, firstFormGroup);
-                else composeBody.appendChild(statusDisplay); // Fallback
-            }
-            statusDisplay.innerHTML = ''; // Clear previous messages
-            btnSendEmail.disabled = true;
-            btnSendEmail.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
-
-            const simulateStep = (message, delayTime) => {
-                return new Promise(resolve => {
-                    const stepMessage = document.createElement('p');
-                    stepMessage.innerHTML = `<i class='bx bx-loader-circle bx-spin' style='margin-right: 8px; color: var(--primary-color);'></i> ${message}`;
-                    statusDisplay.appendChild(stepMessage);
-                    statusDisplay.scrollTop = statusDisplay.scrollHeight; // Auto-scroll
-                    setTimeout(() => {
-                        stepMessage.innerHTML = `<i class='bx bx-check-circle' style='margin-right: 8px; color: var(--success-color);'></i> ${message}`;
-                        resolve();
-                    }, delayTime);
-                });
-            };
-
-            try {
-                await simulateStep(`Preparing message for: <strong>${recipient}</strong>...`, 1000);
-                await simulateStep(`Connecting to mail server...`, 1500);
-                const recipientDomain = recipient.includes('@') ? recipient.split('@')[1] : 'example.com';
-                await simulateStep(`Authenticating & delivering to <strong>${recipientDomain}</strong>...`, 2000);
-                
-                const finalDeliveryMsg = document.createElement('p');
-                finalDeliveryMsg.style.fontWeight = 'bold';
-                finalDeliveryMsg.innerHTML = `<i class='bx bxs-paper-plane' style='margin-right: 8px; color: var(--success-color);'></i> Message sent successfully!`;
-                statusDisplay.appendChild(finalDeliveryMsg);
-                statusDisplay.scrollTop = statusDisplay.scrollHeight;
-
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Wait a bit after success message
-                
-                composeModal.style.display = 'none';
-                if(composeTo) composeTo.value = '';
-                if(composeCc) composeCc.value = '';
-                if(composeSubject) composeSubject.value = '';
-                if(composeMessage) composeMessage.value = '';
-                if(wordCountEl) wordCountEl.textContent = '0 words';
-                showDashboard(); // Or inbox, or last view
-            } catch (error) {
-                console.error("Simulation error:", error);
-                if(statusDisplay) {
-                    const errorMsg = document.createElement('p');
-                    errorMsg.style.color = 'var(--danger-color)';
-                    errorMsg.style.fontWeight = 'bold';
-                    errorMsg.innerHTML = `<i class='bx bx-error-circle' style='margin-right: 8px;'></i> Sending Failed. Please try again.`;
-                    statusDisplay.appendChild(errorMsg);
-                    statusDisplay.scrollTop = statusDisplay.scrollHeight;
-                }
-            } finally {
-                btnSendEmail.disabled = false;
-                btnSendEmail.textContent = 'Send';
-            }
-        });
-    }
-    
-    // Make compose modal draggable
-    let isDragging = false;
-    let offsetX, offsetY;
-    const draggableHeader = document.getElementById('composeHeaderDraggable');
-
-    if (draggableHeader && composeModal) {
-        draggableHeader.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offsetX = e.clientX - composeModal.offsetLeft;
-            offsetY = e.clientY - composeModal.offsetTop;
-            draggableHeader.style.cursor = 'grabbing';
-            // Prevent text selection while dragging
-            e.preventDefault(); 
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            let newX = e.clientX - offsetX;
-            let newY = e.clientY - offsetY;
-
-            // Boundary checks (optional, simple example)
-            const maxRight = window.innerWidth - composeModal.offsetWidth;
-            const maxBottom = window.innerHeight - composeModal.offsetHeight;
-
-            newX = Math.max(0, Math.min(newX, maxRight));
-            newY = Math.max(0, Math.min(newY, maxBottom));
-
-            composeModal.style.left = `${newX}px`;
-            composeModal.style.top = `${newY}px`;
-            // Important: If using bottom/right for positioning, this needs to change
-            // The current CSS uses bottom/right for initial position.
-            // For dragging, it's easier if top/left are used, or transform.
-            // Let's switch composeModal's CSS from bottom/right to top/left for dragging.
-            // For now, this will work if initial position is not bottom/right.
-            // The .send CSS is `bottom: 20px; right: 20px;`
-            // This means we need to set top/left explicitly on first drag or convert.
-            // On first drag, convert bottom/right to top/left.
-            if (composeModal.style.bottom || composeModal.style.right) {
-                 composeModal.style.top = composeModal.offsetTop + 'px';
-                 composeModal.style.left = composeModal.offsetLeft + 'px';
-                 composeModal.style.bottom = 'auto';
-                 composeModal.style.right = 'auto';
-            }
-
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            draggableHeader.style.cursor = 'move';
-        });
-    }
-
-
-    // --- Initial Load ---
-    checkLoginStatus();
-    handleResponsive(); // Initial responsive check
-
-});
-</script>
+        function applyUI(user) { const init = user.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(); document.querySelectorAll("#sideAvatar, #topAvatar").forEach(el=>el.innerText=init); document.getElementById("sideName").innerText = user.name; document.getElementById("sideRole").innerText = user.role; }
+        function hideAuth() { const a = document.getElementById("authGlobal"); if(a) a.remove(); }
+        function showAuthModal() {
+            if(document.getElementById("authGlobal")) return;
+            const div = document.createElement("div"); div.id="authGlobal"; div.className="modal-overlay"; div.style.display="flex";
+            div.innerHTML = `<div class="modal-panel"><div id="loginBox"><h3> Login to Dashboard</h3><form id="loginForm"><input type="email" id="loginEmail" class="form-input" placeholder="Email address" required><input type="password" id="loginPass" class="form-input" placeholder="Password" required><div style="text-align:right;"><span id="forgotLink" style="cursor:pointer;color:var(--primary);">Forgot password?</span></div><button type="submit" class="btn-gold" style="width:100%; margin-top:12px;">Login</button><div style="margin-top:20px;">No account? <strong id="showRegBtn" style="cursor:pointer;color:var(--primary);">Register now</strong></div></form></div><div id="registerBox" style="display:none;"><h3> Register</h3><form id="regForm"><input type="text" id="regName" class="form-input" placeholder="Full Name" required><input type="email" id="regEmail" class="form-input" placeholder="Email" required><input type="password" id="regPass" class="form-input" placeholder="Password" required><input type="password" id="regConfirm" class="form-input" placeholder="Confirm Password" required><input type="text" id="regAnswer" class="form-input" placeholder="Security answer (favorite color)" required><button type="submit" class="btn-gold" style="width:100%;">Register</button><div style="margin-top:20px;"><span id="backLogin" style="cursor:pointer;color:var(--primary);">← Back to Login</span></div></form></div><div id="forgotBox" style="display:none;"><h3> Reset Password</h3><form id="forgotForm"><input type="email" id="forgotEmail" class="form-input" placeholder="Email" required><input type="text" id="forgotAns" class="form-input" placeholder="Security answer" required><input type="password" id="newPass" class="form-input" placeholder="New password" required><button type="submit" class="btn-gold" style="width:100%;">Reset Password</button><div style="margin-top:20px;"><span id="backLoginForgot" style="cursor:pointer;color:var(--primary);">← Back to Login</span></div></form></div></div>`;
+            document.body.appendChild(div);
+            document.getElementById("loginForm").addEventListener("submit", (e)=>{ e.preventDefault(); const email = document.getElementById("loginEmail").value; const pwd = document.getElementById("loginPass").value; const users = JSON.parse(localStorage.getItem("app_users")); const user = users.find(u=>u.email===email && u.password===pwd); if(user){ localStorage.setItem("current_app_user",JSON.stringify(user)); currentUser=user; applyUI(user); div.remove(); renderAll(); showDashboardView(); showToast("Welcome back"); } else alert("Invalid credentials"); });
+            document.getElementById("showRegBtn").onclick = ()=>{ document.getElementById("loginBox").style.display="none"; document.getElementById("registerBox").style.display="block"; };
+            document.getElementById("backLogin").onclick = ()=>{ document.getElementById("loginBox").style.display="block"; document.getElementById("registerBox").style.display="none"; };
+            document.getElementById("forgotLink").onclick = ()=>{ document.getElementById("loginBox").style.display="none"; document.getElementById("forgotBox").style.display="block"; };
+            document.getElementById("backLoginForgot").onclick = ()=>{ document.getElementById("loginBox").style.display="block"; document.getElementById("forgotBox").style.display="none"; };
+            document.getElementById("regForm").addEventListener("submit",(e)=>{ e.preventDefault(); let users = JSON.parse(localStorage.getItem("app_users")); const email = document.getElementById("regEmail").value; if(users.find(u=>u.email===email)){ alert("Email already exists"); return; } const newUser = { id:Date.now(), name:document.getElementById("regName").value, email, password:document.getElementById("regPass").value, role:"Teacher", securityAnswer:document.getElementById("regAnswer").value.toLowerCase() }; users.push(newUser); localStorage.setItem("app_users",JSON.stringify(users)); localStorage.setItem("current_app_user",JSON.stringify(newUser)); currentUser=newUser; applyUI(newUser); div.remove(); renderAll(); showDashboardView(); showToast("Registration successful"); });
+            document.getElementById("forgotForm").addEventListener("submit",(e)=>{ e.preventDefault(); const email = document.getElementById("forgotEmail").value; const ans = document.getElementById("forgotAns").value.toLowerCase(); const newPwd = document.getElementById("newPass").value; let users = JSON.parse(localStorage.getItem("app_users")); const idx = users.findIndex(u=>u.email===email && u.securityAnswer===ans); if(idx===-1){ alert("Email or security answer incorrect"); return; } users[idx].password = newPwd; localStorage.setItem("app_users",JSON.stringify(users)); alert("Password changed successfully"); document.getElementById("loginBox").style.display="block"; document.getElementById("forgotBox").style.display="none"; });
+        }
+        function showDashboardView() { document.getElementById("dashboardPanel").style.display = "block"; document.getElementById("studentsPanel").style.display = "none"; document.querySelectorAll(".nav-links li").forEach(li=>li.classList.remove("active")); document.getElementById("navDashboard").classList.add("active"); renderAll(); }
+        function showStudentsView() { if(!currentUser){ showAuthModal(); return; } document.getElementById("dashboardPanel").style.display = "none"; document.getElementById("studentsPanel").style.display = "block"; document.querySelectorAll(".nav-links li").forEach(li=>li.classList.remove("active")); document.getElementById("navStudents").classList.add("active"); renderAll(); }
+        document.getElementById("dashboardBtn").addEventListener("click", (e)=>{ e.preventDefault(); showDashboardView(); });
+        document.getElementById("studentsBtn").addEventListener("click", (e)=>{ e.preventDefault(); showStudentsView(); });
+        document.getElementById("toggleSidebar").addEventListener("click", ()=> document.getElementById("sidebar").classList.toggle("collapsed"));
+        document.getElementById("logoutGlobal").addEventListener("click", ()=>{ localStorage.removeItem("current_app_user"); location.reload(); });
+        initData(); initAuth(); AOS.init({ duration: 600, once: true });
+    </script>
 </body>
 </html>
+
